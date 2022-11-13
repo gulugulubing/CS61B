@@ -1,16 +1,17 @@
 /**cirle structure*/
-public class LinkedListDeque<GenericType> {
-    private class StuffNode { //must be no-staitc,otherwise can not use GenreicType, sentinel,this,private is better here
-        private GenericType item;
+public class LinkedListDeque<T> {
+    /**must be no-staitc,otherwise can not use GenreicType,
+     * sentinel,this,private is better here*/
+    private class StuffNode {
+        private T item;
         private StuffNode prev;
         private StuffNode next;
-        public StuffNode(GenericType i, StuffNode n){
+        public StuffNode(T i, StuffNode n) {
             item = i;
-            if ( n == null ){
+            if (n == null) {
                 next = this;
                 prev = this;
-            }
-            else {
+            } else {
                 prev = sentinel;
                 next = n;
                 n.prev = this;
@@ -18,26 +19,25 @@ public class LinkedListDeque<GenericType> {
         }
     }
 
-    private StuffNode sentinel;//end user need not know this
+    private StuffNode sentinel; //end user need not know this
     private int size;
-
-    public LinkedListDeque(){
-        sentinel = new StuffNode(null,null);//first para should be null,because null is Genre
+    public LinkedListDeque() {
+        sentinel = new StuffNode(null, null); //first para should be null,because null is Genre
         size = 0;
     }
 
-    public LinkedListDeque(GenericType x){
-        sentinel = new StuffNode(null,null);//first para should be null,because null is Genre
-        sentinel.next = new StuffNode(x,sentinel);
+    public LinkedListDeque(T x) {
+        sentinel = new StuffNode(null, null); //first para should be null,because null is Genre
+        sentinel.next = new StuffNode(x, sentinel);
         size = 1;
     }
 
-    public void addFirst(GenericType x){
+    public void addFirst(T x) {
         sentinel.next = new StuffNode(x, sentinel.next);
         size++;
     }
 
-    public void addLast(GenericType x){
+    public void addLast(T x) {
         StuffNode temp = sentinel.prev;
         sentinel.prev = new StuffNode(x, sentinel);
         sentinel.prev.prev = temp;
@@ -46,7 +46,7 @@ public class LinkedListDeque<GenericType> {
     }
 
     public boolean isEmpty() {
-        if (size == 0){
+        if (size == 0) {
             return true;
         }
         return false;
@@ -56,10 +56,10 @@ public class LinkedListDeque<GenericType> {
         return size;
     }
 
-    public void printDeque(){
+    public void printDeque() {
         StuffNode temp;
         temp = sentinel.next;
-        while (temp != sentinel){
+        while (temp != sentinel) {
             System.out.print(temp.item);
             System.out.print(" ");
             temp = temp.next;
@@ -67,46 +67,52 @@ public class LinkedListDeque<GenericType> {
         System.out.println();
     }
 
-    public GenericType removeFirst() {
-        GenericType temp = sentinel.next.item;
-        sentinel.next = sentinel.next.next;
-        sentinel.next.prev = sentinel;
-        size--;
-        return temp;
+    public T removeFirst() {
+        if (size > 0) {
+            T temp = sentinel.next.item;
+            sentinel.next = sentinel.next.next;
+            sentinel.next.prev = sentinel;
+            size--;
+            return temp;
+        }
+        return null;
     }
 
-    public GenericType removeLast() {
-        GenericType temp = sentinel.prev.item;
-        sentinel.prev = sentinel.prev.prev;
-        sentinel.prev.next = sentinel;
-        size--;
-        return temp;
+    public T removeLast() {
+        if (size > 0) {
+            T temp = sentinel.prev.item;
+            sentinel.prev = sentinel.prev.prev;
+            sentinel.prev.next = sentinel;
+            size--;
+            return temp;
+        }
+        return null;
     }
 
-    public GenericType get(int index) {
-        if ( index >= size|| index < 0 ) {
+    public T get(int index) {
+        if (index >= size || index < 0) {
             return null;
         }
         int temp = -1;
         StuffNode tempNode = sentinel;
-        while ( temp < index){
+        while (temp < index) {
             temp++;
             tempNode = tempNode.next;
         }
         return tempNode.item;
     }
 
-    public GenericType getRecursive(int index) {
-        if ( index >= size || index < 0 ) {
+    public T getRecursive(int index) {
+        if (index >= size || index < 0) {
             return null;
         }
-        if( index == 0 ) {
+        if (index == 0) {
             return sentinel.next.item;
         }
-        GenericType temp;
+        T temp;
         StuffNode tempNode = sentinel;
         sentinel = sentinel.next;
-        temp = getRecursive(index-1);
+        temp = getRecursive(index - 1);
         sentinel = tempNode;
         return temp;
     }
