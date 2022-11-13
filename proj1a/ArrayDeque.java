@@ -157,14 +157,14 @@ public class ArrayDeque<T> {
     }
 
     /**self test*/
-    public static void main(String[] args) {
-        ArrayDeque<String> L = new ArrayDeque<>();
-        L.addFirst("a");
-        L.addLast("b");
-        L.removeFirst();
-        L.removeLast();
-        System.out.println(L.isEmpty());
-        L.size();
-        L.printDeque();
-    }
+    //public static void main(String[] args) {
+      //  ArrayDeque<String> L = new ArrayDeque<>();
+        //L.addFirst("a");
+        //L.addLast("b");
+        //L.removeFirst();
+        //L.removeLast();
+        //System.out.println(L.isEmpty());
+        //L.size();
+        //L.printDeque();
+    //}
 }

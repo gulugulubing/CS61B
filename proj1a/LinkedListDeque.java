@@ -26,12 +26,6 @@ public class LinkedListDeque<T> {
         size = 0;
     }
 
-    public LinkedListDeque(T x) {
-        sentinel = new StuffNode(null, null); //first para should be null,because null is Genre
-        sentinel.next = new StuffNode(x, sentinel);
-        size = 1;
-    }
-
     public void addFirst(T x) {
         sentinel.next = new StuffNode(x, sentinel.next);
         size++;
