@@ -66,6 +66,37 @@ public class IntListTest {
         assertEquals(IntList.of(1, 2, 3), A);
     }
 
+    @Test(timeout = 1000)
+    public void testReverse() {
+        IntList A = IntList.of(0, 1, 2, 3);
+        IntList exp = IntList.of(3, 2, 1, 0);
+        assertEquals(null, IntList.reverse(null));
+        assertEquals(exp, IntList.reverse(A));
+        assertNotEquals(A, IntList.of(0, 1, 2, 3));
+    }
+
+    @Test(timeout = 1000)
+    public void removeDuplicates() {
+        IntList A = IntList.of(0, 1, 2, 2, 3);
+        IntList B = null;
+        IntList exp = IntList.of(0, 1, 2, 3);
+        IntList.removeDuplicates(A);
+        IntList.removeDuplicates(B);
+        assertEquals(null, B);
+        assertEquals(exp, A);
+    }
+
+    @Test(timeout = 1000)
+    public void skippify() {
+        IntList A = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        IntList B = IntList.of(9, 8, 7, 6, 5, 4, 3, 2, 1);
+        IntList expA = IntList.of(1, 3, 6, 10);
+        IntList expB = IntList.of(9, 7, 4);
+        A.skippify();
+        B.skippify();
+        assertEquals(expA, A);
+        assertEquals(expB, B);
+    }
     /** If you're running this from the command line, you'll need
       * to add a main method. See ArithmeticTest.java for an
       * example. */
