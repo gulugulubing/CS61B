@@ -34,12 +34,7 @@ public class Palindrome {
         if (d.size() == 0 || d.size() == 1) {
             return true;
         }
-        char first = (char) d.removeFirst();
-        char last = (char) d.removeLast();
-        if ((first > 96 && last < 91) || (last > 96 && first < 91)) {
-            return false;
-        }
-        if (cc.equalChars(first, last)) {
+        if (cc.equalChars((Character) d.removeFirst(), (Character) d.removeLast())) {
             return isEndsEqual(d, cc);
         } else {
             return false;
