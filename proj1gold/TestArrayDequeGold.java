@@ -2,14 +2,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TestArrayDequeGold {
-    static StudentArrayDeque<Integer> stu = new StudentArrayDeque<>();
-    static ArrayDequeSolution<Integer> sol = new ArrayDequeSolution<>();
-
     /**
      * test add,get,and size changed by add
      */
     @Test
     public void testGetAndAdd() {
+        StudentArrayDeque<Integer> stu = new StudentArrayDeque<>();
+        ArrayDequeSolution<Integer> sol = new ArrayDequeSolution<>();
         for (int i = 0; i < 100; i++) {
             Integer randomIndex;
             double random01 = StdRandom.uniform();
@@ -30,6 +29,8 @@ public class TestArrayDequeGold {
 
     @Test
     public void testRemove() {
+        StudentArrayDeque<Integer> stu = new StudentArrayDeque<>();
+        ArrayDequeSolution<Integer> sol = new ArrayDequeSolution<>();
         String message = "";
         double randomSel;
         for (int i = 0; i < 10; i++) {
@@ -61,4 +62,9 @@ public class TestArrayDequeGold {
             }
         }
     }
+
+    public static void main(String[] args) {
+        jh61b.junit.TestRunner.runTests(TestArrayDequeGold.class);
+    }
+
 }
