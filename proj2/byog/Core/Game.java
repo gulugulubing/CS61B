@@ -11,16 +11,16 @@ import java.util.Random;
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    private static final int WIDTH = 80;
-    private static final int HEIGHT = 50;
-    private static Random RANDOM;
-    private static ArrayList<Rectangle> hallway = new ArrayList<>();
+    public  static final int WIDTH = 80;
+    public static final int HEIGHT = 50;
+    public static Random RANDOM;
+    public static ArrayList<Rectangle> hallway = new ArrayList<>();
 
-    private static class Rectangle {
-        protected int width;
-        protected int height;
-        protected int xLeft;
-        protected int yBottom;
+    public static class Rectangle {
+        public int width;
+        public int height;
+        public int xLeft;
+        public int yBottom;
 
         public Rectangle(int x, int y, int w, int h) {
             width = w;
@@ -79,14 +79,14 @@ public class Game {
         return finalWorldFrame;
     }
 
-    protected void start(TETile[][] world) {
+    public void start(TETile[][] world) {
         int x = RandomUtils.uniform(RANDOM, 20, 60);
         int y = RandomUtils.uniform(RANDOM, 15, 35);
         int w = RandomUtils.uniform(RANDOM, 5, 15);
         int h = RandomUtils.uniform(RANDOM, 5, 15);
         mapCreator(world, x, y, w, h);
     }
-    protected void mapCreator(TETile[][] world, int x, int y, int w, int h) {
+    public void mapCreator(TETile[][] world, int x, int y, int w, int h) {
         Rectangle rec = drawRoomOrHallway(world, x, y, w, h);
         if (rec == null) {
             //System.out.println("recursion end");
@@ -334,7 +334,7 @@ public class Game {
     }
 
 
-    private boolean roomOverLap(TETile[][] world, int x, int y, int w, int h) {
+    public boolean roomOverLap(TETile[][] world, int x, int y, int w, int h) {
         if (x < 0 || y < 0 || x + w - 1 > Game.WIDTH - 1 || y + h - 1 > Game.HEIGHT - 1) {
             //System.out.println("OUT OF BOUND ");
             return true;
@@ -444,7 +444,7 @@ public class Game {
         return false;
     }
 
-    private static boolean horizon4continualPoints(TETile[][] world, int x, int y) {
+    public static boolean horizon4continualPoints(TETile[][] world, int x, int y) {
         for (int i = 0; i < 4; i++) {
             if (y + i > Game.WIDTH - 1) {
                 return false;
@@ -456,7 +456,7 @@ public class Game {
         return true;
     }
 
-    private static boolean vertical4continualPoints(TETile[][] world, int x, int y) {
+    public static boolean vertical4continualPoints(TETile[][] world, int x, int y) {
         for (int i = 0; i < 4; i++) {
             if (y + i > Game.HEIGHT - 1) {
                 return false;
@@ -469,7 +469,7 @@ public class Game {
     }
 
 
-    private void completeHallway(TETile[][] world, ArrayList<Rectangle> hallway) {
+    public void completeHallway(TETile[][] world, ArrayList<Rectangle> hallway) {
         for (Rectangle tempHallway:hallway) {
             if (tempHallway.width == 3) {
                 if (tempHallway.yBottom != 0
