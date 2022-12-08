@@ -64,7 +64,7 @@ public class Game {
 
         RANDOM = new Random(seed);
 
-        ter.initialize(WIDTH, HEIGHT);
+        //ter.initialize(WIDTH, HEIGHT);
 
         TETile[][]finalWorldFrame = new TETile[WIDTH][HEIGHT];
         for (int x = 0; x < WIDTH; x += 1) {
@@ -75,7 +75,7 @@ public class Game {
 
         start(finalWorldFrame);
         completeHallway(finalWorldFrame, hallway);
-        ter.renderFrame(finalWorldFrame);
+        //ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 
