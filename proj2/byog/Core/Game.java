@@ -275,15 +275,13 @@ public class Game implements Serializable{
             start(finalWorldFrame);
             completeHallway(finalWorldFrame, hallway);
             stringPlayerMove(finalWorldFrame, moveInput);
-            //ter.renderFrame(finalWorldFrame);
         } else if (firstLetter == 'L' || firstLetter == 'l') {
-            System.out.println(moveInput);
+            //System.out.println(moveInput);
             Game g = loadWorld();
             this.finalWorldFrame = g.finalWorldFrame;
             this.yLocation = g.yLocation;
             this.xLocation = g.xLocation;
             stringPlayerMove(this.finalWorldFrame, moveInput);
-            //ter.renderFrame(this.finalWorldFrame);
         }
         return this.finalWorldFrame;
 
@@ -331,9 +329,8 @@ public class Game implements Serializable{
                         //ter.renderFrame(world);
                     }
                 } else if (moveS.charAt(i) == ':' && (moveS.charAt(i + 1) == 'q' || moveS.charAt(i + 1) == 'Q')) {
-                    System.out.println("come to save");
                     saveWorld(this);
-                    System.exit(0);
+                    break;
                 }
             }
         }
