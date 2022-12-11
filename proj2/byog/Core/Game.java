@@ -270,7 +270,7 @@ public class Game implements Serializable{
             moveInput = null;
         }
 
-        if (firstLetter == 'N' || firstLetter == 'n') {
+        if (firstLetter == 'N') {
             RANDOM = new Random(seed);
             start(finalWorldFrame);
             completeHallway(finalWorldFrame, hallway);
