@@ -275,7 +275,7 @@ public class Game implements Serializable{
             start(finalWorldFrame);
             completeHallway(finalWorldFrame, hallway);
             stringPlayerMove(finalWorldFrame, moveInput);
-        } else if (firstLetter == 'L' || firstLetter == 'l') {
+        } else if (firstLetter == 'L') {
             //System.out.println(moveInput);
             Game g = loadWorld();
             this.finalWorldFrame = g.finalWorldFrame;
