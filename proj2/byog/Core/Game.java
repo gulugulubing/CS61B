@@ -1,20 +1,28 @@
 package byog.Core;
 
+import byog.SaveDemo.World;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import edu.princeton.cs.introcs.StdDraw;
 
+import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 
-public class Game {
+public class Game implements Serializable{
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public  static final int WIDTH = 80;
     public static final int HEIGHT = 50;
+    int xLocation;//player's
+    int yLocation;//player's
     public static Random RANDOM;
     public static ArrayList<Rectangle> hallway = new ArrayList<>();
+
+    public TETile[][]finalWorldFrame = new TETile[WIDTH][HEIGHT];
 
     public static class Rectangle {
         public int width;
@@ -34,6 +42,189 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        ter.initialize(WIDTH,HEIGHT);
+        drawMenu();
+        char startKey;
+        while (true) {
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            startKey = StdDraw.nextKeyTyped();
+            if (startKey == 'n' || startKey == 'N') {
+                StdDraw.clear();
+                StdDraw.clear(Color.black);
+                StdDraw.text(WIDTH / 2, HEIGHT / 2, "Enter the Seed:");
+                StdDraw.show();
+                String inputSeed = "";
+                while (true) {
+                    if (!StdDraw.hasNextKeyTyped()) {
+                        continue;
+                    }
+                    char key = StdDraw.nextKeyTyped();
+                    inputSeed += String.valueOf(key);
+                    StdDraw.clear();
+                    StdDraw.clear(Color.black);
+                    StdDraw.text(WIDTH / 2, HEIGHT / 2 + 10, inputSeed);
+                    StdDraw.show();
+                    if (key == 's' || key == 'S') {
+                        newStartGame(inputSeed);
+                        playerMove(finalWorldFrame, ter, this);
+                        break;
+                    }
+                }
+            } else if (startKey == 'l' || startKey == 'L') {
+                ter.initialize(WIDTH,HEIGHT);
+                Game g = loadWorld();
+                this.xLocation = g.xLocation;
+                this.yLocation = g.yLocation;
+                this.finalWorldFrame = g.finalWorldFrame;
+                if(g != null) {
+                    playerMove(g.finalWorldFrame,ter,this);
+                    break;
+                }
+            } else if (startKey == 'q' || startKey == 'Q') {
+                System.exit(0);
+            }
+        }
+    }
+
+    private void newStartGame(String inputSeed) {
+        ter.initialize(WIDTH,HEIGHT);
+        long seed = 0;
+        for (int i = 0; i < inputSeed.length() - 1; i++) {
+            char c = inputSeed.charAt(i);
+            if (c < '0' || c > '9') {
+                continue;
+            }
+            seed = seed * 10 + (c - '0');
+        }
+
+        RANDOM = new Random(seed);
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                finalWorldFrame[x][y] = Tileset.NOTHING;
+            }
+        }
+
+        start(finalWorldFrame);
+        completeHallway(finalWorldFrame, hallway);
+        //ter.renderFrame(finalWorldFrame);
+    }
+    private static Game loadWorld() {
+        File f = new File("./last.ser");
+        if (f.exists()) {
+            try {
+                FileInputStream fs = new FileInputStream(f);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                Game loadGame = (Game) os.readObject();
+                os.close();
+                return loadGame;
+            } catch (FileNotFoundException e) {
+                System.out.println("file not found");
+                System.exit(0);
+            } catch (IOException e) {
+                System.out.println(e);
+                System.exit(0);
+            } catch (ClassNotFoundException e) {
+                System.out.println("class not found");
+                System.exit(0);
+            }
+        }
+        return null;
+    }
+
+    private static void saveWorld(Game g) {
+        File f = new File("./last.ser");
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            FileOutputStream fs = new FileOutputStream(f);
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(g);
+            os.close();
+        }  catch (FileNotFoundException e) {
+            System.out.println("file not found");
+            System.exit(0);
+        } catch (IOException e) {
+            System.out.println(e);
+            System.exit(0);
+        }
+    }
+
+    public void drawMenu() {
+        Font bigFont = new Font("Monaco", Font.BOLD, 40);
+        StdDraw.setFont(bigFont);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.text(WIDTH/2, 3*HEIGHT/4, "CS61B:THE GAME");
+
+
+        Font smallFont = new Font("Monaco", Font.BOLD, 20);
+        StdDraw.setFont(smallFont);
+        StdDraw.text(WIDTH/2, HEIGHT/2, "New Game (N)");
+        StdDraw.text(WIDTH/2, HEIGHT/2 - 5, "Load Game (L)");
+        StdDraw.text(WIDTH/2, HEIGHT/2 - 10, "Quit Game (Q)");
+        StdDraw.show();
+    }
+
+    public void playerMove(TETile[][] world, TERenderer ter,Game g) {
+
+        while (true && RANDOM != null) {//if load, RANDOM WILL BE NULL
+            g.xLocation = RandomUtils.uniform(RANDOM, 0, Game.WIDTH);
+            g.yLocation = RandomUtils.uniform(RANDOM, 0, Game.HEIGHT);
+            if (world[g.xLocation][g.yLocation].character() == '·') {
+                world[g.xLocation][g.yLocation] = Tileset.PLAYER;
+                break;
+            }
+        }
+
+
+        while (true) {
+            int xMouse = (int) Math.floor(StdDraw.mouseX());
+            int yMouse = (int) Math.floor(StdDraw.mouseY());
+            StdDraw.setPenColor(StdDraw.WHITE);
+            StdDraw.textLeft(1, HEIGHT - 1, world[xMouse][yMouse].description());
+            StdDraw.show();
+            ter.renderFrame(world);
+
+
+            /* check if the user has typed a key; if so, process it */
+            if (StdDraw.hasNextKeyTyped()) {
+                char key = StdDraw.nextKeyTyped();
+                if (key == 'w') {
+                    if (g.yLocation + 1 < Game.HEIGHT && world[g.xLocation][g.yLocation + 1].character() == '·') {
+                        world[g.xLocation][g.yLocation] = Tileset.FLOOR;
+                        g.yLocation = g.yLocation + 1;
+                        world[g.xLocation][g.yLocation] = Tileset.PLAYER;
+                        ter.renderFrame(world);
+                    }
+                } else if (key == 'a') {
+                    if (g.xLocation - 1 >= 0 && world[g.xLocation - 1][g.yLocation].character() == '·') {
+                        world[g.xLocation][g.yLocation] = Tileset.FLOOR;
+                        g.xLocation = g.xLocation - 1;
+                        world[g.xLocation][g.yLocation] = Tileset.PLAYER;
+                        ter.renderFrame(world);
+                    }
+                } else if (key == 's') {
+                    if (g.yLocation - 1 >= 0 && world[g.xLocation][g.yLocation - 1].character() == '·') {
+                        world[g.xLocation][g.yLocation] = Tileset.FLOOR;
+                        g.yLocation = g.yLocation - 1;
+                        world[g.xLocation][g.yLocation] = Tileset.PLAYER;
+                        ter.renderFrame(world);
+                    }
+                } else if (key == 'd') {
+                    if (g.xLocation + 1 < Game.WIDTH && world[g.xLocation + 1][g.yLocation].character() == '·') {
+                        world[g.xLocation][g.yLocation] = Tileset.FLOOR;
+                        g.xLocation = g.xLocation + 1;
+                        world[g.xLocation][g.yLocation] = Tileset.PLAYER;
+                        ter.renderFrame(world);
+                    }
+                } else if (key == 'q') {
+                    saveWorld(this);
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     /**
@@ -54,6 +245,14 @@ public class Game {
         // drawn if the same inputs had been given to playWithKeyboard().
         // initialize tiles
         long seed = 0;
+
+        //ter.initialize(WIDTH, HEIGHT);
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                finalWorldFrame[x][y] = Tileset.NOTHING;
+            }
+        }
+        char firstLetter = input.charAt(0);
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             if (c < '0' || c > '9') {
@@ -62,23 +261,83 @@ public class Game {
             seed = seed * 10 + (c - '0');
         }
 
-        RANDOM = new Random(seed);
 
-        //ter.initialize(WIDTH, HEIGHT);
+        String inputLst[] = input.split("[SL]");
+        String moveInput;
+        if (inputLst.length == 2) {
+            moveInput = inputLst[1];
+        } else {
+            moveInput = null;
+        }
 
-        TETile[][]finalWorldFrame = new TETile[WIDTH][HEIGHT];
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                finalWorldFrame[x][y] = Tileset.NOTHING;
+        if (firstLetter == 'N') {
+            RANDOM = new Random(seed);
+            start(finalWorldFrame);
+            completeHallway(finalWorldFrame, hallway);
+            stringPlayerMove(finalWorldFrame, moveInput);
+            //ter.renderFrame(finalWorldFrame);
+        } else if (firstLetter == 'L') {
+            System.out.println(moveInput);
+            Game g = loadWorld();
+            this.finalWorldFrame = g.finalWorldFrame;
+            this.yLocation = g.yLocation;
+            this.xLocation = g.xLocation;
+            stringPlayerMove(this.finalWorldFrame, moveInput);
+            //ter.renderFrame(this.finalWorldFrame);
+        }
+        return this.finalWorldFrame;
+
+    }
+
+    public void stringPlayerMove(TETile[][] world, String moveS) {
+        while (true && RANDOM != null) {//if load, RANDOM WILL BE NULL
+            xLocation = RandomUtils.uniform(RANDOM, 0, Game.WIDTH);
+            yLocation = RandomUtils.uniform(RANDOM, 0, Game.HEIGHT);
+            if (world[xLocation][yLocation].character() == '·') {
+                world[xLocation][yLocation] = Tileset.PLAYER;
+                break;
             }
         }
 
-        start(finalWorldFrame);
-        completeHallway(finalWorldFrame, hallway);
-        //ter.renderFrame(finalWorldFrame);
-        return finalWorldFrame;
+        if (moveS != null) {
+            for (int i = 0; i < moveS.length(); i++) {
+                /* check if the user has typed a key; if so, process it */
+                if (moveS.charAt(i) == 'w' || moveS.charAt(i) == 'W') {
+                    if (yLocation + 1 < Game.HEIGHT && world[xLocation][yLocation + 1].character() == '·') {
+                        world[xLocation][yLocation] = Tileset.FLOOR;
+                        yLocation = yLocation + 1;
+                        world[xLocation][yLocation] = Tileset.PLAYER;
+                        //ter.renderFrame(world);
+                    }
+                } else if (moveS.charAt(i) == 'a' || moveS.charAt(i) == 'A') {
+                    if (xLocation - 1 >= 0 && world[xLocation - 1][yLocation].character() == '·') {
+                        world[xLocation][yLocation] = Tileset.FLOOR;
+                        xLocation = xLocation - 1;
+                        world[xLocation][yLocation] = Tileset.PLAYER;
+                        //ter.renderFrame(world);
+                    }
+                } else if (moveS.charAt(i) == 's' || moveS.charAt(i) == 'S') {
+                    if (yLocation - 1 >= 0 && world[xLocation][yLocation - 1].character() == '·') {
+                        world[xLocation][yLocation] = Tileset.FLOOR;
+                        yLocation = yLocation - 1;
+                        world[xLocation][yLocation] = Tileset.PLAYER;
+                        //ter.renderFrame(world);
+                    }
+                } else if (moveS.charAt(i) == 'd' || moveS.charAt(i) == 'D') {
+                    if (xLocation + 1 < Game.WIDTH && world[xLocation + 1][yLocation].character() == '·') {
+                        world[xLocation][yLocation] = Tileset.FLOOR;
+                        xLocation = xLocation + 1;
+                        world[xLocation][yLocation] = Tileset.PLAYER;
+                        //ter.renderFrame(world);
+                    }
+                } else if (moveS.charAt(i) == ':' && (moveS.charAt(i + 1) == 'q' || moveS.charAt(i + 1) == 'Q')) {
+                    System.out.println("come to save");
+                    saveWorld(this);
+                    System.exit(0);
+                }
+            }
+        }
     }
-
     public void start(TETile[][] world) {
         int x = RandomUtils.uniform(RANDOM, 20, 60);
         int y = RandomUtils.uniform(RANDOM, 15, 35);
