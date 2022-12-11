@@ -262,7 +262,7 @@ public class Game implements Serializable{
         }
 
 
-        String inputLst[] = input.split("[SL]");
+        String inputLst[] = input.split("[SLsl]");
         String moveInput;
         if (inputLst.length == 2) {
             moveInput = inputLst[1];
@@ -270,13 +270,13 @@ public class Game implements Serializable{
             moveInput = null;
         }
 
-        if (firstLetter == 'N') {
+        if (firstLetter == 'N' || firstLetter == 'n') {
             RANDOM = new Random(seed);
             start(finalWorldFrame);
             completeHallway(finalWorldFrame, hallway);
             stringPlayerMove(finalWorldFrame, moveInput);
             //ter.renderFrame(finalWorldFrame);
-        } else if (firstLetter == 'L') {
+        } else if (firstLetter == 'L' || firstLetter == 'l') {
             System.out.println(moveInput);
             Game g = loadWorld();
             this.finalWorldFrame = g.finalWorldFrame;
