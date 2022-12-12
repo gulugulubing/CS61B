@@ -111,7 +111,7 @@ public class Game implements Serializable{
     }
     private static Game loadWorld() {
         File f = new File("./last.ser");
-        if (f.exists()) {
+        //if (f.exists()) {
             try {
                 FileInputStream fs = new FileInputStream(f);
                 ObjectInputStream os = new ObjectInputStream(fs);
@@ -128,16 +128,16 @@ public class Game implements Serializable{
                 System.out.println("class not found");
                 System.exit(0);
             }
-        }
+        //}
         return null;
     }
 
     private static void saveWorld(Game g) {
         File f = new File("./last.ser");
         try {
-            if (!f.exists()) {
-                f.createNewFile();
-            }
+            //if (!f.exists()) {
+                //f.createNewFile();
+           // }
             FileOutputStream fs = new FileOutputStream(f);
             ObjectOutputStream os = new ObjectOutputStream(fs);
             os.writeObject(g);
