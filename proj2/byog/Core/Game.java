@@ -1,6 +1,5 @@
 package byog.Core;
 
-import byog.SaveDemo.World;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
@@ -180,6 +179,7 @@ public class Game implements Serializable{
 
 
         while (true) {
+            /*mouse hover display*/
             int xMouse = (int) Math.floor(StdDraw.mouseX());
             int yMouse = (int) Math.floor(StdDraw.mouseY());
             StdDraw.setPenColor(StdDraw.WHITE);
@@ -262,7 +262,7 @@ public class Game implements Serializable{
         }
 
 
-        String inputLst[] = input.split("[SLsl]");
+        String inputLst[] = input.split("[SLsl]",2);
         String moveInput;
         if (inputLst.length == 2) {
             moveInput = inputLst[1];
@@ -270,13 +270,13 @@ public class Game implements Serializable{
             moveInput = null;
         }
 
-        if (firstLetter == 'N') {
+
+        if (firstLetter == 'N' || firstLetter == 'n') {
             RANDOM = new Random(seed);
             start(finalWorldFrame);
             completeHallway(finalWorldFrame, hallway);
             stringPlayerMove(finalWorldFrame, moveInput);
-        } else if (firstLetter == 'L') {
-            //System.out.println(moveInput);
+        } else if (firstLetter == 'L' || firstLetter == 'l') {
             Game g = loadWorld();
             this.finalWorldFrame = g.finalWorldFrame;
             this.yLocation = g.yLocation;
