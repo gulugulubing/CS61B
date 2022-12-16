@@ -30,7 +30,9 @@ public class Percolation {
         int index = row * scale + col;
         open[index] = true;
         numOfOpen = numOfOpen + 1;
-        unionOpen(row, col);
+        if (isOpen(row, col)) {
+            unionOpen(row, col);
+        }
         isFull(row, col); //will determine  isPercolation
     }
 

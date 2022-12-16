@@ -7,7 +7,7 @@ public class PercolationStats {
     private double[] result;
 
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if (N <= 0) {
+        if (N <= 0 || T <= 0) {
             throw new IllegalArgumentException();
         }
         result = new double[T];
