@@ -12,11 +12,11 @@ public class Percolation {
     private boolean isPercolation = false;
     public Percolation(int N) {
         grid = new WeightedQuickUnionUF(N * N);
-        open = new boolean[N*N];
-        min = new int[N*N];
+        open = new boolean[N * N];
+        min = new int[N * N];
         scale = N;
         numOfOpen = 0;
-        for (int i = 0; i < N*N; i++) {
+        for (int i = 0; i < N * N; i++) {
             min[i] = i;
         }
     }
@@ -26,6 +26,7 @@ public class Percolation {
         open[index] = true;
         numOfOpen = numOfOpen + 1;
         unionOpen(row, col);
+        isFull(row,col);//will determine  isPercolation
     }
 
     private void unionOpen(int row, int col) {
@@ -34,15 +35,15 @@ public class Percolation {
         int bottom;
         int left;
         int right;
-        int parent1 = grid.find(index);
+        int parent1;
         int parent2;
         if (row > 0) {
             top = (row - 1) * scale + col;
             parent1 = grid.find(index);
             parent2 = grid.find(top);
-            if (open[top] == true) {
+            if (open[top]) {
                 grid.union(index, top);
-                if (min[parent1]<min[parent2]) {
+                if (min[parent1] < min[parent2]) {
                     min[grid.find(index)] = min[parent1];
                 } else {
                     min[grid.find(index)] = min[parent2];
@@ -53,9 +54,9 @@ public class Percolation {
             bottom = (row + 1) * scale + col;
             parent1 = grid.find(index);
             parent2 = grid.find(bottom);
-            if (open[bottom] == true) {
+            if (open[bottom]) {
                 grid.union(index, bottom);
-                if (min[parent1]<min[parent2]) {
+                if (min[parent1] < min[parent2]) {
                     min[grid.find(index)] = min[parent1];
                 } else {
                     min[grid.find(index)] = min[parent2];
@@ -66,9 +67,9 @@ public class Percolation {
             left = row * scale + col - 1;
             parent1 = grid.find(index);
             parent2 = grid.find(left);
-            if (open[left] == true) {
+            if (open[left]) {
                 grid.union(index, left);
-                if (min[parent1]<min[parent2]) {
+                if (min[parent1] < min[parent2]) {
                     min[grid.find(index)] = min[parent1];
                 } else {
                     min[grid.find(index)] = min[parent2];
@@ -79,9 +80,9 @@ public class Percolation {
             right = row * scale + col + 1;
             parent1 = grid.find(index);
             parent2 = grid.find(right);
-            if (open[right] == true) {
+            if (open[right]) {
                 grid.union(index, right);
-                if (min[parent1]<min[parent2]) {
+                if (min[parent1] < min[parent2]) {
                     min[grid.find(index)] = min[parent1];
                 } else {
                     min[grid.find(index)] = min[parent2];

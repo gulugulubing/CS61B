@@ -6,7 +6,7 @@ import edu.princeton.cs.introcs.StdStats;
 public class PercolationStats {
     private double[] result;
 
-    public PercolationStats(int N, int T, PercolationFactory pf) {
+    public PercolationStats(int N, int T, PercolationFactory pf) throws IllegalArgumentException {
         result = new double[T];
         for (int i = 0; i < T; i++) {
             Percolation per = pf.make(N);
