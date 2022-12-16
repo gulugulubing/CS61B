@@ -41,6 +41,7 @@ public class Percolation {
         isFull(row, col); //will determine  isPercolation
     }
 
+    /*union neighbors which are open*/
     private void unionOpen(int row, int col) {
         if (col < 0 || col > scale - 1 || row < 0 || row > scale - 1) {
             throw new IndexOutOfBoundsException();
@@ -50,79 +51,48 @@ public class Percolation {
         int bottom;
         int left;
         int right;
-        int parent1;
-        int parent2;
         if (row > 0) {
             top = (row - 1) * scale + col;
-            parent1 = grid.find(index);
-            parent2 = grid.find(top);
             if (open[top]) {
-                grid.union(index, top);
-                if (min[parent1] < min[parent2]) {
-                    min[grid.find(index)] = min[parent1];
-                } else {
-                    min[grid.find(index)] = min[parent2];
-                }
-                if (max[parent1] < max[parent2]) {
-                    max[grid.find(index)] = max[parent2];
-                } else {
-                    max[grid.find(index)] = max[parent1];
-                }
+                unionAndFindMaxMin(index, top);
             }
         }
         if (row < scale - 1) {
             bottom = (row + 1) * scale + col;
-            parent1 = grid.find(index);
-            parent2 = grid.find(bottom);
             if (open[bottom]) {
-                grid.union(index, bottom);
-                if (min[parent1] < min[parent2]) {
-                    min[grid.find(index)] = min[parent1];
-                } else {
-                    min[grid.find(index)] = min[parent2];
-                }
-                if (max[parent1] < max[parent2]) {
-                    max[grid.find(index)] = max[parent2];
-                } else {
-                    max[grid.find(index)] = max[parent1];
-                }
+                unionAndFindMaxMin(index, bottom);
             }
         }
         if (col > 0) {
             left = row * scale + col - 1;
-            parent1 = grid.find(index);
-            parent2 = grid.find(left);
             if (open[left]) {
-                grid.union(index, left);
-                if (min[parent1] < min[parent2]) {
-                    min[grid.find(index)] = min[parent1];
-                } else {
-                    min[grid.find(index)] = min[parent2];
-                }
-                if (max[parent1] < max[parent2]) {
-                    max[grid.find(index)] = max[parent2];
-                } else {
-                    max[grid.find(index)] = max[parent1];
-                }
+                unionAndFindMaxMin(index, left);
             }
         }
         if (col < scale - 1) {
             right = row * scale + col + 1;
-            parent1 = grid.find(index);
-            parent2 = grid.find(right);
             if (open[right]) {
-                grid.union(index, right);
-                if (min[parent1] < min[parent2]) {
-                    min[grid.find(index)] = min[parent1];
-                } else {
-                    min[grid.find(index)] = min[parent2];
-                }
-                if (max[parent1] < max[parent2]) {
-                    max[grid.find(index)] = max[parent2];
-                } else {
-                    max[grid.find(index)] = max[parent1];
-                }
+                unionAndFindMaxMin(index, right);
             }
+        }
+    }
+
+    private void unionAndFindMaxMin(int p, int neighbor) {
+        /*parents before union*/
+        int parent1 = grid.find(p);
+        int parent2 = grid.find(neighbor);
+
+        grid.union(p, neighbor);
+        /*notice:after union,parent1 may not equal grid.find[p]*/
+        if (min[parent1] < min[parent2]) {
+            min[grid.find(p)] = min[parent1];
+        } else {
+            min[grid.find(p)] = min[parent2];
+        }
+        if (max[parent1] < max[parent2]) {
+            max[grid.find(p)] = max[parent2];
+        } else {
+            max[grid.find(p)] = max[parent1];
         }
     }
 
