@@ -88,9 +88,9 @@ public class Percolation {
             if (open[left]) {
                 grid.union(index, left);
                 if (min[parent1] < min[parent2]) {
-                    min[grid.find(index)] = max[parent1];
+                    min[grid.find(index)] = min[parent1];
                 } else {
-                    min[grid.find(index)] = max[parent2];
+                    min[grid.find(index)] = min[parent2];
                 }
                 if (max[parent1] < max[parent2]) {
                     max[grid.find(index)] = max[parent2];
