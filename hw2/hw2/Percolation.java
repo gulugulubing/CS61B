@@ -27,12 +27,17 @@ public class Percolation {
     }
 
     public void open(int row, int col) {
-        int index = row * scale + col;
-        open[index] = true;
-        numOfOpen = numOfOpen + 1;
-        if (isOpen(row, col)) {
+        if (col < 0 || col > scale - 1 || row < 0 || row > scale - 1) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (!isOpen(row, col)) {
+            int index = row * scale + col;
+            open[index] = true;
+            numOfOpen = numOfOpen + 1;
             unionOpen(row, col);
         }
+
         isFull(row, col); //will determine  isPercolation
     }
 
