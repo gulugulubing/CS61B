@@ -158,7 +158,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             }
             p.key = predecessor.key;
             p.value = predecessor.value;
-            predecessorFather.right = predecessor.left;
+            if (predecessorFather == p) {
+                //one line corner case
+                p.left = predecessor.left;
+            } else {
+                predecessorFather.right = predecessor.left;
+            }
             return val;
         } else if (successor != null) {
             //not have left but have right children
@@ -168,12 +173,22 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             }
             p.key = successor.key;
             p.value = successor.value;
-            successorFather.left = successor.right;
+            if (successorFather == p) {
+                //one line corner case
+                p.right = successor.right;
+            } else {
+                successorFather.left = successor.right;
+            }
             return val;
         } else {
             //have no children
+            if (pFather == null) {
+                root = null;
+                return val;
+            }
             if (pFather.left != null && pFather.left.key == key) {
                 pFather.left = null;
+                return val;
             }
             pFather.right = null;
             return val;
@@ -217,12 +232,15 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     public static void main(String[] args) {
         BSTMap<String, Integer> bstmap = new BSTMap<>();
-        bstmap.put("hello", 5);
-        bstmap.put("cat", 10);
-        bstmap.put("fish", 22);
-        bstmap.put("zebra", 90);
-        bstmap.put("zebra", 100);
-        System.out.println(bstmap.remove("zebra", 100));
+        bstmap.put("dog", 4);
+        //bstmap.put("bag", 2);
+        //bstmap.put("flat", 7);
+        //bstmap.put("alf", 1);
+        //bstmap.put("cat", 3);
+        //bstmap.put("elf", 5);
+        //bstmap.put("glut", 8);
+        //bstmap.put("eys", 6);
+        System.out.println(bstmap.remove("dog", 4));
         Set<String>  k =  bstmap.keySet();
         System.out.println(k);
     }
