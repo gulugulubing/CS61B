@@ -102,7 +102,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        Set<K> ks= new HashSet<>();
+        Set<K> ks = new HashSet<>();
         return keySetHelp(root, ks);
     }
 
@@ -112,7 +112,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         }
         ks.add(p.key);
         ks = keySetHelp(p.left, ks);
-        ks = keySetHelp(p.right,ks);
+        ks = keySetHelp(p.right, ks);
         return ks;
     }
 
@@ -144,7 +144,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     //my Hibbard deletion
-    private V hibbardDeletion (K key, Node p, Node pFather) {
+    private V hibbardDeletion(K key, Node p, Node pFather) {
         V val = p.value;
         Node predecessorFather = p;
         Node successorFather = p;
@@ -222,7 +222,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         bstmap.put("fish", 22);
         bstmap.put("zebra", 90);
         bstmap.put("zebra", 100);
-        System.out.println(bstmap.remove("fish", 2));
+        System.out.println(bstmap.remove("zebra", 100));
         Set<String>  k =  bstmap.keySet();
         System.out.println(k);
     }
