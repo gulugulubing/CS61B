@@ -1,5 +1,6 @@
 package lab9;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -101,7 +102,18 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> ks= new HashSet<>();
+        return keySetHelp(root, ks);
+    }
+
+    private Set<K> keySetHelp(Node p, Set<K> ks) {
+        if (p == null) {
+            return ks;
+        }
+        ks.add(p.key);
+        ks = keySetHelp(p.left, ks);
+        ks = keySetHelp(p.right,ks);
+        return ks;
     }
 
     /** Removes KEY from the tree if present
@@ -110,7 +122,62 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        V value = removeHelp(key, root, null);
+        if (value == null) {
+            return null;
+        }
+        size--;
+        return value;
+    }
+
+    private V removeHelp(K key, Node p, Node pFather) {
+        if (p == null) {
+            return null;
+        }
+        if (key.equals(p.key)) {
+            return hibbardDeletion(key, p, pFather);
+        } else if (key.compareTo(p.key) < 0) {
+            return removeHelp(key, p.left, p);
+        } else {
+            return removeHelp(key, p.right, p);
+        }
+    }
+
+    //my Hibbard deletion
+    private V hibbardDeletion (K key, Node p, Node pFather) {
+        V val = p.value;
+        Node predecessorFather = p;
+        Node successorFather = p;
+        Node successor = p.right;
+        Node predecessor = p.left;
+        if (predecessor != null) {
+            //have left children
+            while (predecessor.right != null) {
+                predecessorFather = predecessor;
+                predecessor = predecessor.right;
+            }
+            p.key = predecessor.key;
+            p.value = predecessor.value;
+            predecessorFather.right = predecessor.left;
+            return val;
+        } else if (successor != null) {
+            //not have left but have right children
+            while (successor.left != null) {
+                successorFather = successor;
+                successor = successor.left;
+            }
+            p.key = successor.key;
+            p.value = successor.value;
+            successorFather.left = successor.right;
+            return val;
+        } else {
+            //have no children
+            if (pFather.left != null && pFather.left.key == key) {
+                pFather.left = null;
+            }
+            pFather.right = null;
+            return val;
+        }
     }
 
     /** Removes the key-value entry for the specified key only if it is
@@ -119,12 +186,33 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      **/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        value = removeHelp(key, value, root, null);
+        if (value == null) {
+            return null;
+        }
+        size--;
+        return value;
+    }
+
+    private V removeHelp(K key, V value, Node p, Node pFather) {
+        if (p == null) {
+            return null;
+        }
+        if (key.equals(p.key)) {
+            if (!value.equals(p.value)) {
+                return null;
+            }
+            return hibbardDeletion(key, p, pFather);
+        } else if (key.compareTo(p.key) < 0) {
+            return removeHelp(key, value, p.left, p);
+        } else {
+            return removeHelp(key, value, p.right, p);
+        }
     }
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+        return keySet().iterator();
     }
 
     public static void main(String[] args) {
@@ -134,5 +222,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         bstmap.put("fish", 22);
         bstmap.put("zebra", 90);
         bstmap.put("zebra", 100);
+        System.out.println(bstmap.remove("fish", 2));
+        Set<String>  k =  bstmap.keySet();
+        System.out.println(k);
     }
 }
