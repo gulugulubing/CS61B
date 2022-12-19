@@ -120,6 +120,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      *  returns VALUE removed,
      *  null on failed removal.
      */
+    /* my way is too complex
     @Override
     public V remove(K key) {
         V value = removeHelp(key, root, null);
@@ -194,11 +195,52 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return val;
         }
     }
+    */
+
+    @Override
+    public V remove(K key) {
+        V val = get(key);
+        if (val == null) {
+            return null;
+        }
+        root = remove(root, key);
+        return val;
+    }
+
+    private Node remove(Node x, K key) {
+        if (x == null) return null;
+
+        int cmp = key.compareTo(x.key);
+        if      (cmp < 0) x.left  = remove(x.left,  key);
+        else if (cmp > 0) x.right = remove(x.right, key);
+        else {
+            if (x.right == null) return x.left;
+            if (x.left  == null) return x.right;
+            Node t = x;
+            x = min(t.right);
+            x.right = removeMin(t.right);
+            x.left = t.left;
+        }
+        return x;
+    }
+
+    private Node min(Node x) {
+        if (x.left == null) return x;
+        else                return min(x.left);
+    }
+
+    private Node removeMin(Node x) {
+        if (x.left == null) return x.right;
+        x.left = removeMin(x.left);
+        size--;
+        return x;
+    }
 
     /** Removes the key-value entry for the specified key only if it is
      *  currently mapped to the specified value.  Returns the VALUE removed,
      *  null on failed removal.
      **/
+    /* my way is too complex
     @Override
     public V remove(K key, V value) {
         value = removeHelp(key, value, root, null);
@@ -224,6 +266,17 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return removeHelp(key, value, p.right, p);
         }
     }
+    */
+
+    @Override
+    public V remove(K key, V value) {
+        V val = get(key);
+        if (val != value) {
+            return null;
+        }
+        root = remove(root, key);
+        return val;
+    }
 
     @Override
     public Iterator<K> iterator() {
@@ -233,13 +286,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public static void main(String[] args) {
         BSTMap<String, Integer> bstmap = new BSTMap<>();
         bstmap.put("dog", 4);
-        //bstmap.put("bag", 2);
-        //bstmap.put("flat", 7);
-        //bstmap.put("alf", 1);
-        //bstmap.put("cat", 3);
-        //bstmap.put("elf", 5);
-        //bstmap.put("glut", 8);
-        //bstmap.put("eys", 6);
+        bstmap.put("bag", 2);
+        bstmap.put("flat", 7);
+        bstmap.put("alf", 1);
+        bstmap.put("cat", 3);
+        bstmap.put("elf", 5);
+        bstmap.put("glut", 8);
+        bstmap.put("eys", 6);
         System.out.println(bstmap.remove("dog", 4));
         Set<String>  k =  bstmap.keySet();
         System.out.println(k);
