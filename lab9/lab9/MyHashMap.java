@@ -66,12 +66,12 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     /* Associates the specified value with the specified key in this map. */
     @Override
     public void put(K key, V value) {
-        if (!containsKey(key)) {
-            size = size + 1;
-        }
         if (loadFactor() > MAX_LF) {
             //actually resize() only when lf > 1, because loadFactor return int
             resize(this.buckets.length * 2);
+        }
+        if (!containsKey(key)) {
+            size = size + 1;
         }
         ArrayMap<K, V> bk = buckets[hash(key)];
         bk.put(key, value);
@@ -160,6 +160,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         myhm.put("n", 14);
         myhm.put("o", 15);
         myhm.put("p", 16);
+        System.out.println(myhm.size());
         myhm.remove("p");
         myhm.remove("o");
         myhm.remove("n");
@@ -196,10 +197,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         myhm.put("mm", 13);
         myhm.put("nn", 14);
         myhm.put("oo", 15);
-       // myhm.put("pp", 16);
         Set<String>  k =  myhm.keySet();
-        System.out.println(k);
+        System.out.println(k.size());
         System.out.println(myhm.containsKey("a"));
         System.out.println(myhm.get("a"));
+        System.out.println(myhm.size);
+        System.out.println(myhm.size());
     }
 }
