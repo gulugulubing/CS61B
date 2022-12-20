@@ -27,6 +27,12 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         this.clear();
     }
 
+    //just for
+    private MyHashMap(int bucketNum) {
+        buckets = new ArrayMap[bucketNum];
+        this.clear();
+    }
+
     /* Removes all the mappings from this map. */
     @Override
     public void clear() {
@@ -72,14 +78,18 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     private void resize(int newSize) {
-        ArrayMap<K, V>[] newBuckets = new ArrayMap[newSize];
-        for (int i = 0; i < newSize; i += 1) {
-            newBuckets[i] = new ArrayMap<>();
+        //must create newHashMap,because hash(key) will be changed,
+        // old (key,value)s will in different bucket.
+        //you cannot just create newBuckets and then put(key, value)
+        //because old (key,value)s will in same bucket.
+        MyHashMap<K, V> newHashMap = new MyHashMap<>(newSize);
+        for (ArrayMap<K, V> bucket : buckets) {
+            for (K key : bucket) {
+                newHashMap.put(key, bucket.get(key));
+            }
         }
-        for (K key : this.keySet()) {
-            newBuckets[hash(key)].put(key,get(key));
-        }
-        this.buckets = newBuckets;
+        this.buckets = newHashMap.buckets;
+        this.size = newHashMap.size;
     }
 
     /* Returns the number of key-value mappings in this map. */
@@ -150,9 +160,46 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         myhm.put("n", 14);
         myhm.put("o", 15);
         myhm.put("p", 16);
-        //myhm.remove("fish");
+        myhm.remove("p");
+        myhm.remove("o");
+        myhm.remove("n");
+        myhm.remove("m");
+        myhm.remove("l");
+        myhm.remove("k");
+        myhm.remove("j");
+        myhm.remove("i");
+        myhm.remove("h");
+        myhm.remove("g");
+        myhm.put("z", 17);
+        myhm.put("g", 7);
+        myhm.put("h", 8);
+        myhm.put("i", 9);
+        myhm.put("j", 10);
+        myhm.put("k", 11);
+        myhm.put("l", 12);
+        myhm.put("m", 13);
+        myhm.put("n", 14);
+        myhm.put("o", 15);
+        myhm.put("p", 16);
+        myhm.put("aa", 1);
+        myhm.put("bb", 2);
+        myhm.put("cc", 3);
+        myhm.put("dd", 4);
+        myhm.put("ee", 5);
+        myhm.put("ff", 6);
+        myhm.put("gg", 7);
+        myhm.put("hh", 8);
+        myhm.put("ii", 9);
+        myhm.put("jj", 10);
+        myhm.put("kk", 11);
+        myhm.put("ll", 12);
+        myhm.put("mm", 13);
+        myhm.put("nn", 14);
+        myhm.put("oo", 15);
+       // myhm.put("pp", 16);
         Set<String>  k =  myhm.keySet();
         System.out.println(k);
-        System.out.println(myhm.get("b"));
+        System.out.println(myhm.containsKey("a"));
+        System.out.println(myhm.get("a"));
     }
 }
