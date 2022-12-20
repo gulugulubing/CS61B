@@ -219,7 +219,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             if (p.right == null) return p.left;
             Node t = p;
             p = min(t.right);
-            p.right = removeMin(key, t.right);
+            p.right = removeMin(t.right);
             p.left = t.left;
         }
         return p;
@@ -230,11 +230,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         else                return min(x.left);
     }
 
-    private Node removeMin(K key, Node p) {
+    private Node removeMin(Node p) {
         if (p.left == null) {
             return p.right;
         }
-        p.left = removeMin(key, p.left);
+        p.left = removeMin(p.left);
         return p;
     }
 
