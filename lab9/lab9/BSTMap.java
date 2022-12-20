@@ -208,22 +208,20 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         return val;
     }
 
-    private Node remove(K key,Node p) {
-        if (p == null) return null;
-        int cmp = p.key.compareTo(key);
-        if (cmp < 0) {
-            p.right = remove(key, p.right);
-        } else if (cmp > 0) {
-            p.left = remove(key, p.left);
-        } else {
-            if (p.left == null) return p.right;
-            if (p.right == null) return p.left;
-            Node t = p;
-            p = min(t.right);
-            p.right = removeMin(t.right);
-            p.left = t.left;
+    private Node remove(K key,Node x) {
+        if (x == null) return null;
+        int cmp = x.key.compareTo(key);
+        if (cmp < 0) x.right = remove(key, x.right);
+        else if (cmp > 0) x.left = remove(key, x.left);
+        else {
+            if (x.left == null) return x.right;
+            if (x.right == null) return x.left;
+            Node t = x;
+            x = min(t.right);
+            x.right = removeMin(t.right);
+            x.left = t.left;
         }
-        return p;
+        return x;
     }
 
     private Node min(Node x) {
@@ -231,12 +229,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         else                return min(x.left);
     }
 
-    private Node removeMin(Node p) {
-        if (p.left == null) {
-            return p.right;
-        }
-        p.left = removeMin(p.left);
-        return p;
+    private Node removeMin(Node x) {
+        if (x.left == null) return x.right;
+        x.left = removeMin(x.left);
+        return x;
     }
 
     /** Removes the key-value entry for the specified key only if it is
