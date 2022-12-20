@@ -209,6 +209,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     private Node remove(K key,Node p) {
+        if (p == null) return null;
         int cmp = p.key.compareTo(key);
         if (cmp < 0) {
             p.right = remove(key, p.right);
