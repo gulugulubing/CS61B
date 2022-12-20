@@ -204,18 +204,18 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return null;
         }
         size--;
-        root = remove(key, root);
+        root = remove(root, key);
         return val;
     }
 
-    private Node remove(K key,Node x) {
+    private Node remove(Node x, K key) {
         if (x == null) return null;
         int cmp = key.compareTo(x.key);
-        if      (cmp < 0) x.left = remove(key, x.left);
-        else if (cmp > 0) x.right = remove(key, x.right);
+        if      (cmp < 0) x.left = remove(x.left, key);
+        else if (cmp > 0) x.right = remove(x.right, key);
         else {
-            if (x.left == null) return x.right;
             if (x.right == null) return x.left;
+            if (x.left  == null) return x.right;
             Node t = x;
             x = min(t.right);
             x.right = removeMin(t.right);
@@ -274,7 +274,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return null;
         }
         size--;
-        root = remove(key,root);
+        root = remove(root, key);
         return val;
     }
 
