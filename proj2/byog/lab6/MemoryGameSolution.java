@@ -95,12 +95,15 @@ public class MemoryGameSolution {
         drawFrame(input);
 
         while (input.length() < n) {
+            System.out.println(StdDraw.mouseX());
+            //System.out.println("aaa");
             if (!StdDraw.hasNextKeyTyped()) {
+                //System.out.println("bbb");
                 continue;
             }
             char key = StdDraw.nextKeyTyped();
             input += String.valueOf(key);
-            drawFrame(input);
+            drawFrame(input + StdDraw.mouseX());
         }
         StdDraw.pause(500);
         return input;
