@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 
 public class Solver {
-    private  class SearchNode implements Comparable<SearchNode>{
+    private  class SearchNode implements Comparable<SearchNode> {
         private WorldState ws;
         private int moveNum;
         private int estimatedToGoal;
@@ -37,7 +37,7 @@ public class Solver {
         minPQ = new MinPQ<>();
         while (!lastNode.ws.isGoal()) {
             minimumMoves = lastNode.moveNum + 1;
-            for(WorldState ws : lastNode.ws.neighbors()) {
+            for (WorldState ws : lastNode.ws.neighbors()) {
                 if (lastNode.previousNode == null || !ws.equals(lastNode.previousNode.ws)) {
                     SearchNode neighbor = new SearchNode(ws, minimumMoves, lastNode);
                     minPQ.insert(neighbor);
@@ -48,6 +48,9 @@ public class Solver {
     }
 
     public int moves() {
+        if (lastNode == null) {
+            throw new NullPointerException();
+        }
         return lastNode.moveNum;
     }
     public Iterable<WorldState> solution() {
@@ -62,6 +65,6 @@ public class Solver {
         for (i = 0; i < worldStates.length; i++) {
             sol.add(worldStates[i]);
         }
-    return sol;
+        return sol;
     }
 }

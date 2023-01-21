@@ -2,13 +2,13 @@ package hw4.puzzle;
 
 import edu.princeton.cs.algs4.Queue;
 
-public class Board implements WorldState{
+public class Board implements WorldState {
     private int[][] t;
     private int size;
     public Board(int[][] tiles) {
         t = new int[tiles.length][tiles.length];
         for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j <tiles.length; j++) {
+            for (int j = 0; j < tiles.length; j++) {
                 t[i][j] = tiles[i][j];
             }
         }
@@ -65,7 +65,7 @@ public class Board implements WorldState{
     public int hamming() {
         int ham = 0;
         for (int i = 0; i < t.length; i++) {
-            for (int j = 0; j <t.length; j++) {
+            for (int j = 0; j < t.length; j++) {
                 if (t[i][j] == 0) {
                     continue;
                 }
@@ -80,13 +80,13 @@ public class Board implements WorldState{
     public int manhattan() {
         int m = 0;
         for (int i = 0; i < size; i++) {
-            for (int j = 0; j <size; j++) {
+            for (int j = 0; j < size; j++) {
                 if (t[i][j] == 0) {
                     continue;
                 }
                 if (t[i][j] != size * i + j + 1) {
-                    m = m + Math.abs(row(t[i][j]) - row(size * i + j + 1)) +
-                            Math.abs(colomn(t[i][j]) - colomn(size * i + j + 1));
+                    m = m + Math.abs(row(t[i][j]) - row(size * i + j + 1))
+                            + Math.abs(colomn(t[i][j]) - colomn(size * i + j + 1));
                 }
             }
         }
@@ -119,7 +119,7 @@ public class Board implements WorldState{
         }
 
         for (int i = 0; i < this.size; i++) {
-            for (int j = 0; j <this.size; j++) {
+            for (int j = 0; j < this.size; j++) {
                 if (this.t[i][j] != by.t[i][j]) {
                     return false;
                 }
@@ -136,7 +136,7 @@ public class Board implements WorldState{
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tileAt(i,j)));
+                s.append(String.format("%2d ", tileAt(i, j)));
             }
             s.append("\n");
         }
