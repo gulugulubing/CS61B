@@ -31,7 +31,6 @@ public class Solver {
     }
     private SearchNode lastNode;
     private MinPQ<SearchNode> minPQ;
-    private int moves;
     public Solver(WorldState initial) {
         int minimumMoves;
         lastNode = new SearchNode(initial);
@@ -46,19 +45,19 @@ public class Solver {
             }
             lastNode = minPQ.delMin();
         }
-        moves = lastNode.moveNum;
     }
 
     public int moves() {
-        return moves;
+        return lastNode.moveNum;
     }
     public Iterable<WorldState> solution() {
+        SearchNode ln = lastNode;
         ArrayList<WorldState> sol = new ArrayList<>();
-        WorldState[] worldStates = new WorldState[lastNode.moveNum + 1];
-        int i = lastNode.moveNum;
+        WorldState[] worldStates = new WorldState[ln.moveNum + 1];
+        int i = ln.moveNum;
         while (i > -1) {
-            worldStates[i] = lastNode.ws;
-            lastNode = lastNode.previousNode;
+            worldStates[i] = ln.ws;
+            ln = ln.previousNode;
             i--;
         }
         for (i = 0; i < worldStates.length; i++) {
