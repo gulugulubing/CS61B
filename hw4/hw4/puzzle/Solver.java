@@ -49,7 +49,7 @@ public class Solver {
 
     public int moves() {
         if (lastNode == null) {
-            throw new NullPointerException();
+            return 0;
         }
         return lastNode.moveNum;
     }
