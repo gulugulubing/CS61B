@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +24,55 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        long start = g.closest(stlon, stlat);
+        long end = g.closest(destlon, destlat);
+        //vertex number to the best known distance
+        Map<Long, Double> bestDis = new HashMap<>();
+
+
+        //Init bestDis
+        for (long id : g.vertices()){
+            bestDis.put(id, Double.MAX_VALUE);
+        }
+        bestDis.put(start, 0.0);
+        g.setPriority(start, 0);
+
+        //vertex number to the best vertex number.
+        Map<Long,Long> bestEdge = new HashMap<>();
+
+
+        PriorityQueue<Long> fringe = new PriorityQueue<>(g.getNodeComparator());
+
+        fringe.add(start);
+        long dequeNode = fringe.poll();
+        //System.out.println(dequeNode);
+        while (dequeNode != end) {
+            for (Long adj : g.adjacent(dequeNode)) {
+                double bestDisOfAdj = bestDis.get(dequeNode) + g.distance(dequeNode, adj);
+                if ( bestDisOfAdj < bestDis.get(adj)) {
+                    bestDis.put(adj, bestDisOfAdj);
+                    bestEdge.put(adj, dequeNode);
+                    g.setPriority(adj, bestDisOfAdj + g.distance(adj, end));
+                    //System.out.println("add" + adj);
+                    fringe.add(adj);
+                }
+            }
+            dequeNode = fringe.poll();
+            //System.out.println(dequeNode);
+        }
+
+        return getPath(bestEdge, start, end);
+    }
+
+    private static List<Long> getPath(Map<Long, Long> bestEdge, long start, long end) {
+        ArrayList<Long> reversePath = new ArrayList<>();
+        while (end != start) {
+            reversePath.add(end);
+            end = bestEdge.get(end);
+        }
+        reversePath.add(start);
+        Collections.reverse(reversePath);
+        return reversePath;
     }
 
     /**
@@ -37,9 +84,51 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        ArrayList<NavigationDirection> navigationDirections = new ArrayList<>();
+        NavigationDirection currentNavi = new NavigationDirection();
+        //start
+
+        long startNodeOfWay = route.get(0);
+        currentNavi.direction = 0;
+        GraphDB.Edge way = g.getWay(startNodeOfWay, route.get(1));
+        currentNavi.way = way.name;
+
+        for (int i = 2; i < route.size() - 1; i++) {
+            if (!g.nodeInWay(route.get(i), way)) {
+                currentNavi.distance = g.distance(startNodeOfWay, route.get(i - 1));
+                navigationDirections.add(currentNavi);
+                startNodeOfWay = route.get(i - 1);
+
+                //new way
+                currentNavi = new NavigationDirection();
+                currentNavi.direction =  getDirection(g, route.get(i -2),route.get(i-1),route.get(i));
+                way = g.getWay(startNodeOfWay, route.get(i));
+                currentNavi.way = way.name;
+            }
+        }
+        return navigationDirections;
     }
 
+    private static int getDirection(GraphDB g, long n1, long n2, long n3) {
+        double b1 = g.bearing(n2, n1);
+        double b2 = g.bearing(n3, n2);
+        double rb = b2 -b1;
+        if ( -15 < rb && rb < 15) {
+            return 1;
+        } else if ( -15 >= rb && rb > -30) {
+            return 2;
+        } else if (15 <= rb && rb < 30) {
+            return 3;
+        } else if (-30 >= rb && rb > -100) {
+            return 4;
+        } else if (30 <= rb && rb < 100) {
+            return 5;
+        } else if (-100 >= 100) {
+            return 6;
+        } else {
+            return 7;
+        }
+    }
 
     /**
      * Class to represent a navigation direction, which consists of 3 attributes:
