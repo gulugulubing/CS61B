@@ -1,5 +1,3 @@
-import example.CSCourseDB;
-import org.eclipse.jetty.xml.XmlParser;
 import org.xml.sax.SAXException;
 
 import java.io.File;
