@@ -64,6 +64,9 @@ public class Router {
                 }
             }
             marked.put(dequeNode, true);
+            if (fringe.isEmpty()) {
+                return null;
+            }
             dequeNode = fringe.poll();
             //System.out.println(dequeNode);
         }
