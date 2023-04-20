@@ -29,10 +29,12 @@ public class Router {
         //vertex number to the best known distance
         Map<Long, Double> bestDis = new HashMap<>();
 
+        Map<Long, Boolean> marked = new HashMap<>();
 
         //Init bestDis
         for (long id : g.vertices()){
             bestDis.put(id, Double.MAX_VALUE);
+            marked.put(id, false);
         }
         bestDis.put(start, 0.0);
         g.setPriority(start, 0);
@@ -47,6 +49,10 @@ public class Router {
         long dequeNode = fringe.poll();
         //System.out.println(dequeNode);
         while (dequeNode != end) {
+            if (marked.get(dequeNode)) {
+                dequeNode = fringe.poll();
+                continue;
+            }
             for (Long adj : g.adjacent(dequeNode)) {
                 double bestDisOfAdj = bestDis.get(dequeNode) + g.distance(dequeNode, adj);
                 if ( bestDisOfAdj < bestDis.get(adj)) {
