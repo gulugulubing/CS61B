@@ -63,6 +63,7 @@ public class Router {
                     fringe.add(adj);
                 }
             }
+            marked.put(dequeNode, true);
             dequeNode = fringe.poll();
             //System.out.println(dequeNode);
         }
