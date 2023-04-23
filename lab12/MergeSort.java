@@ -80,10 +80,6 @@ public class MergeSort {
         while (q1.size() < size / 2) {
             q1.enqueue(items.dequeue());
         }
-
-        if (q1.size() == 1 || items.size() == 1) {
-            return mergeSortedQueues(q1, items);
-        }
         return mergeSortedQueues(mergeSort(q1), mergeSort(items));
     }
 
@@ -116,15 +112,16 @@ public class MergeSort {
         */
         //test mergeSortedQueues
         Queue<Integer> q1 = new Queue<>();
-        q1.enqueue(32);
-        q1.enqueue(15);
         q1.enqueue(2);
-        q1.enqueue(17);
-        q1.enqueue(19);
-        q1.enqueue(26);
-        q1.enqueue(41);
-        q1.enqueue(17);
-        q1.enqueue(17);
+        q1.enqueue(4);
+        q1.enqueue(5);
+        q1.enqueue(6);
+        q1.enqueue(7);
+        q1.enqueue(7);
+        q1.enqueue(7);
+        q1.enqueue(8);
+        q1.enqueue(8);
+        q1.enqueue(2);
         System.out.println(q1);
         System.out.println(mergeSort(q1));
     }
