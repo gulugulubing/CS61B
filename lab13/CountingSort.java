@@ -68,6 +68,10 @@ public class CountingSort {
      * @param arr int array that will be sorted
      */
     public static int[] betterCountingSort(int[] arr) {
+        if (arr.length < 1) {
+            return arr;
+        }
+
         ArrayList<Integer> negArr = new ArrayList<>();
         ArrayList<Integer> posArr = new ArrayList<>();
         for(int i : arr) {
