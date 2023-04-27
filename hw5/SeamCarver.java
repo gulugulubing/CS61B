@@ -118,54 +118,75 @@ public class SeamCarver {
 
     public int[] findVerticalSeam() {
         int[] seam = new int[this.height()];
-        int mintColumn = 0;
-
         if (p.width() < 2) {
             return seam;
         }
 
-        double minEnergy = findMinVerticalEnergy(mintColumn)[this.height()];
-        for (int column = 1; column < this.width(); column++) {
-            if (findMinVerticalEnergy(column)[this.height()] < minEnergy) {
-                minEnergy = findMinVerticalEnergy(column)[this.height()];
-                mintColumn = column;
+
+        //minim energy to this pix
+        double[][] minEnergy = new double[this.width()][this.height()];
+        //edge to this pix represented by column
+        //first row is useless
+        int[][] edgeTo = new int[this.width()][this.height()];
+
+        //initial minEnergy's first row
+        for (int col = 0; col < this.width(); col++) {
+            minEnergy[col][0] = energyMatrix[col][0];
+        }
+
+        //calculate the rest minEnergy
+        for(int row = 1; row < this.height(); row++) {
+            for(int col = 0; col < this.width();col++) {
+                minEnergy[col][row] = energyMatrix[col][row] + minEdgeToEnergy(col, row, minEnergy, edgeTo);
             }
         }
 
-        for (int i = 0; i < this.height(); i++) {
-            seam[i] = (int) findMinVerticalEnergy(mintColumn)[i];
+
+        //get the bottom pix at the seam
+        double minBottomEnergy = Double.MAX_VALUE;
+        int bottomCol = -1;
+        for (int col = 0; col < this.width(); col++) {
+            if (minEnergy[col][this.height() - 1] < minBottomEnergy) {
+                bottomCol = col;
+                minBottomEnergy = minEnergy[col][this.height() - 1];
+            }
+        }
+
+        seam[this.height() - 1] = bottomCol;
+        //from bottom pix to the top
+        for (int row = this.height() - 1; row > 0; row --) {
+            seam[row - 1] = edgeTo[bottomCol][row];
+            bottomCol = seam[row - 1];
         }
         return seam;
     }
 
-    private double[] findMinVerticalEnergy(int column) {
-        //last index is energy, others are column
-        double [] minEnergyPath = new double[this.height() + 1];
-        minEnergyPath[0] = column;
-        double min = energyMatrix[column][0];
-        for (int row = 1; row < this.height(); row++) {
-            if (column == 0) {
-                if (energyMatrix[column][row] > energyMatrix[column + 1][row]) {
-                    column = column + 1;
-                }
-            } else if (column == this.width() - 1) {
-                if (energyMatrix[column][row] > energyMatrix[column - 1][row]) {
-                    column = column - 1;
-                }
-            } else {
-                if (energyMatrix[column][row] > energyMatrix[column - 1][row] &&
-                        energyMatrix[column + 1][row] > energyMatrix[column - 1][row]) {
-                    column = column - 1;
-                } else if (energyMatrix[column][row] > energyMatrix[column + 1][row] &&
-                        energyMatrix[column - 1][row] > energyMatrix[column + 1][row]) {
-                    column = column + 1;
-                }
-            }
-            minEnergyPath[row] = column;
-            min = min + energyMatrix[column][row];
+    //help find the right edge
+    private double minEdgeToEnergy(int col, int row, double[][]minEnergy, int[][] edgeTo) {
+        double middleEdgeEnergy = minEnergy[col][row - 1];
+        double leftEdgeEnergy;
+        double rightEdgeEnergy;
+        if (col == 0) {
+            leftEdgeEnergy = Double.MAX_VALUE;
+        } else {
+            leftEdgeEnergy = minEnergy[col - 1][row - 1];
         }
-        minEnergyPath[this.height()] = min;
-        return minEnergyPath;
+        if (col == this.width() - 1) {
+            rightEdgeEnergy = Double.MAX_VALUE;
+        } else {
+            rightEdgeEnergy = minEnergy[col + 1][row - 1];
+        }
+
+        if (leftEdgeEnergy < rightEdgeEnergy && leftEdgeEnergy < middleEdgeEnergy) {
+            edgeTo[col][row] = col - 1;
+            return leftEdgeEnergy;
+        } else if (rightEdgeEnergy < leftEdgeEnergy && rightEdgeEnergy < middleEdgeEnergy) {
+            edgeTo[col][row] = col + 1;
+            return rightEdgeEnergy;
+        } else {
+            edgeTo[col][row] = col;
+            return middleEdgeEnergy;
+        }
     }
 
     public void removeHorizontalSeam(int[] seam) {
