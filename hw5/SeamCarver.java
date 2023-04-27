@@ -7,7 +7,7 @@ public class SeamCarver {
     Picture p;
     double[][] energyMatrix;
     public SeamCarver(Picture picture) {
-        this.p = picture;
+        this.p = new Picture(picture);
         storeToEnergyMatrix();
     }
 
@@ -24,7 +24,7 @@ public class SeamCarver {
 
 
     public Picture picture() {
-        return this.p;
+        return new Picture(p);
     }
 
     public int width() {
@@ -177,10 +177,10 @@ public class SeamCarver {
             rightEdgeEnergy = minEnergy[col + 1][row - 1];
         }
 
-        if (leftEdgeEnergy < rightEdgeEnergy && leftEdgeEnergy < middleEdgeEnergy) {
+        if (leftEdgeEnergy <= rightEdgeEnergy && leftEdgeEnergy <= middleEdgeEnergy) {
             edgeTo[col][row] = col - 1;
             return leftEdgeEnergy;
-        } else if (rightEdgeEnergy < leftEdgeEnergy && rightEdgeEnergy < middleEdgeEnergy) {
+        } else if (rightEdgeEnergy <= leftEdgeEnergy && rightEdgeEnergy <= middleEdgeEnergy) {
             edgeTo[col][row] = col + 1;
             return rightEdgeEnergy;
         } else {
