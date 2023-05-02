@@ -1,3 +1,5 @@
+import example.CSCourseDB;
+import org.eclipse.jetty.xml.XmlParser;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -6,7 +8,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -20,7 +22,9 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
-
+    private final Map<Long, GraphDB.Node> nodes = new LinkedHashMap<>();
+    private final Map<Long, GraphDB.Edge> edges = new LinkedHashMap<>();
+    private Map<Long,ArrayList<Long>> adj = new HashMap<>();
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
@@ -42,6 +46,97 @@ public class GraphDB {
         clean();
     }
 
+    static class Node {
+        long id;
+        double lon;
+        double lat;
+        double priority;
+        String name;
+
+
+        Node(long id, double lon, double lat) {
+            this.id = id;
+            this.lon = lon;
+            this.lat = lat;
+        }
+    }
+
+    class NodeComparator implements Comparator<Long> {
+        @Override
+        public int compare(Long id1, Long id2) {
+            return Double.compare(nodes.get(id1).priority, nodes.get(id2).priority);
+        }
+    }
+
+    public Comparator<Long> getNodeComparator() {
+        return new NodeComparator();
+    }
+
+    void setPriority(long id, double p) {
+        nodes.get(id).priority = p;
+    }
+    Edge getWay(long node1, long node2) {
+        for(Map.Entry<Long,Edge> entry: edges.entrySet()) {
+            if (entry.getValue().nodesOfway.contains(node1) &&
+                    entry.getValue().nodesOfway.contains(node2)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+
+    static class Edge {
+        long id;
+        String name;
+        String maxspeed;
+        ArrayList<Long> nodesOfway = new ArrayList<>();
+
+        boolean highway;
+
+        Edge(long id) {
+            this.id = id;
+            highway = false;
+        }
+    }
+
+    void addNode(GraphDB.Node n) {
+        this.nodes.put(n.id, n);
+    }
+
+    void addEdge(GraphDB.Edge e) {
+        this.edges.put(e.id, e);
+    }
+
+    void connectNodes(GraphDB.Edge current) {
+        ArrayList<Long> lstOfNodes= current.nodesOfway;
+        ArrayList<Long> adjOfNodes;
+        if (lstOfNodes.size() > 1) {
+            for (int i = 0; i < lstOfNodes.size(); i++) {
+                adjOfNodes = adj.get(lstOfNodes.get(i));
+                if (i == 0) {
+                    if (adjOfNodes == null) {
+                        adjOfNodes = new ArrayList<>();
+                    }
+                    adjOfNodes.add(lstOfNodes.get(i + 1));
+                } else if (i == lstOfNodes.size() - 1) {
+                    if (adjOfNodes == null) {
+                        adjOfNodes = new ArrayList<>();
+                    }
+                    adjOfNodes.add(lstOfNodes.get(i - 1));
+                } else {
+                    if (adjOfNodes == null) {
+                        adjOfNodes = new ArrayList<>();
+                    }
+                    adjOfNodes.add(lstOfNodes.get(i - 1));
+                    adjOfNodes.add(lstOfNodes.get(i + 1));
+                }
+                adj.put(lstOfNodes.get(i), adjOfNodes);
+            }
+        }
+    }
+
+
     /**
      * Helper to process strings into their "cleaned" form, ignoring punctuation and capitalization.
      * @param s Input string.
@@ -57,7 +152,15 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+        ArrayList<Long> nodesTobeDeleted = new ArrayList<>();
+        for (long id : nodes.keySet()){
+            if(!adj.containsKey(id)) {
+                nodesTobeDeleted.add(id);
+            }
+        }
+        for (long id : nodesTobeDeleted) {
+            nodes.remove(id);
+        }
     }
 
     /**
@@ -66,7 +169,7 @@ public class GraphDB {
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return adj.keySet();
     }
 
     /**
@@ -75,7 +178,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        return adj.get(v);
     }
 
     /**
@@ -136,7 +239,17 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        long closetNode = -1;
+        double minDis = Double.MAX_VALUE;
+        double dis;
+        for(long id : adj.keySet()) {
+            dis = Math.abs(distance(nodes.get(id).lon, nodes.get(id).lat, lon, lat ));
+            if( dis < minDis) {
+                minDis = dis;
+                closetNode = id;
+            }
+        }
+        return closetNode;
     }
 
     /**
@@ -145,7 +258,7 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        return nodes.get(v).lon;
     }
 
     /**
@@ -154,6 +267,6 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        return nodes.get(v).lat;
     }
 }

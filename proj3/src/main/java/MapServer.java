@@ -111,6 +111,7 @@ public class MapServer {
                     getRequestParams(req, REQUIRED_RASTER_REQUEST_PARAMS);
             /* The png image is written to the ByteArrayOutputStream */
             ByteArrayOutputStream os = new ByteArrayOutputStream();
+
             /* getMapRaster() does almost all the work for this API call */
             Map<String, Object> rasteredImgParams = rasterer.getMapRaster(params);
 

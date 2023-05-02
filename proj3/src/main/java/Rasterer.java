@@ -9,8 +9,16 @@ import java.util.Map;
  */
 public class Rasterer {
 
+    private static final double root_ullat = MapServer.ROOT_ULLAT, root_ullon = MapServer.ROOT_ULLON,
+                                root_lrlat = MapServer.ROOT_LRLAT, root_lrlon = MapServer.ROOT_LRLON;
+
+    private static double[] depthLonDPP = new double[8];
+
     public Rasterer() {
-        // YOUR CODE HERE
+        depthLonDPP[0] = (root_lrlon - root_ullon) / MapServer.TILE_SIZE;
+        for(int i = 1; i < 8; i++) {
+            depthLonDPP[i] = depthLonDPP[i-1] / 2;
+        }
     }
 
     /**
@@ -44,9 +52,69 @@ public class Rasterer {
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
         // System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+
+        double reqUllat = params.get("ullat");
+        double reqUllon = params.get("ullon");
+        double reqLrlat = params.get("lrlat");
+        double reqLrlon = params.get("lrlon");
+
+        double reqLonDPP = (reqLrlon - reqUllon) / params.get("w");
+        int depth = getDepth(reqLonDPP);
+
+        if (reqUllon >= root_lrlon || reqLrlon <= root_ullon || reqLrlat >= root_ullat || reqUllat <= root_lrlat
+                || reqUllon >= reqLrlon || reqLrlat >= reqUllat) {
+            results.put("raster_ul_lon", 0);
+            results.put("raster_ul_lat", 0);
+            results.put("raster_lr_lon", 0);
+            results.put("raster_lr_lat", 0);
+            results.put("query_success", false);
+        }
+
+
+        results.put("depth", depth);
+
+        double picLon = (root_lrlon - root_ullon) / Math.pow(2, depth);
+        double picLat = (root_ullat - root_lrlat) / Math.pow(2, depth);
+
+        /* raster's pic's number e.g.(xOfLeft,yOfUpper) is the first pic,
+            (xOfRight,yOfLow) is the last pic,
+         */
+        int xOfLeft = Math.max((int) Math.floor((reqUllon - root_ullon) / picLon), 0);
+        int xOfRight = Math.min((int) Math.floor((reqLrlon- root_ullon) / picLon), (int) Math.pow(2, depth) - 1);
+        int yOfLow = Math.max((int) Math.floor((reqLrlat - root_lrlat) / picLat), 0);
+        int yOfUpper = Math.min((int) Math.floor((reqUllat - root_lrlat) / picLat), (int) Math.pow(2, depth) - 1);
+
+        String[][] files = new String[yOfUpper - yOfLow + 1][xOfRight -xOfLeft + 1];
+        for (int y = yOfUpper; y > yOfLow - 1; y--) {
+            for (int x = xOfLeft; x < xOfRight + 1; x++) {
+                files[yOfUpper - y][x - xOfLeft] = "d" + depth + "_x" + x + "_y" +
+                        ((int) Math.pow(2, depth) - y - 1) + ".png";
+            }
+        }
+        results.put("render_grid", files);
+
+        double raster_ul_lon = root_ullon + xOfLeft * picLon;
+        double raster_ul_lat = root_lrlat + (yOfUpper + 1) * picLat;
+        double raster_lr_lon = root_ullon + (xOfRight + 1) * picLon;
+        double raster_lr_lat = root_lrlat + yOfLow * picLat;
+        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("raster_lr_lon", raster_lr_lon);
+        results.put("raster_lr_lat", raster_lr_lat);
+
+        results.put("query_success", true);
+
+        //System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
+                           //+ "your browser.");
         return results;
+    }
+
+    private int getDepth(double LonDPP) {
+        int i = 0;
+        while (depthLonDPP[i] > LonDPP && i < 7) {
+           i++;
+        }
+        return i;
     }
 
 }
