@@ -93,7 +93,7 @@ public class GraphDB {
 
     static class Edge {
         long id;
-        String name = "Unknown Road";
+        String name = "";
         String maxspeed;
         ArrayList<Long> nodesOfway = new ArrayList<>();
 

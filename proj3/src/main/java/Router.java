@@ -102,50 +102,79 @@ public class Router {
         //start
 
         long startNodeOfWay = route.get(0);
+        int startNodeID = 0;
         currentNavi.direction = 0;
         GraphDB.Edge way = g.getWay(startNodeOfWay, route.get(1));
         currentNavi.way = way.name;
 
+        //just 2 node 
+        if (route.size() < 3) {
+            currentNavi.distance = getDistance(startNodeID, route, g, 1);
+            navigationDirections.add(currentNavi);
+        }
+
 
         for (int i = 2; i < route.size(); i++) {
+            // node on new way
             if ((!way.nodesOfway.contains(route.get(i))) &&
                     ((!way.name.equals(g.getWay(route.get(i - 1), route.get(i)).name)))) {
                 System.out.println(way.name + "---" + g.getWay(route.get(i - 1), route.get(i)).name);
-                currentNavi.distance = g.distance(startNodeOfWay, route.get(i - 1));
+                currentNavi.distance = getDistance(startNodeID, route, g, i - 1);
                 navigationDirections.add(currentNavi);
                 startNodeOfWay = route.get(i - 1);
-
+                startNodeID = i - 1;
                 //new way
                 currentNavi = new NavigationDirection();
                 currentNavi.direction =  getDirection(g, route.get(i -2),route.get(i-1),route.get(i));
                 way = g.getWay(startNodeOfWay, route.get(i));
                 currentNavi.way = way.name;
+                // node on new way and this node is the last node
+                if (i == route.size() - 1) {
+                    currentNavi.distance = getDistance(startNodeID, route, g, i);
+                    navigationDirections.add(currentNavi);
+                }
+            // node not no the new way but reach the end
             } else if ( i == route.size() - 1) {
-                currentNavi.distance = g.distance(startNodeOfWay, route.get(i));
+                currentNavi.distance = getDistance(startNodeID, route, g, i);
                 navigationDirections.add(currentNavi);
             }
         }
         return navigationDirections;
     }
 
+    private static double getDistance(int startID, List<Long> route, GraphDB g, int lastID) {
+        double dis = 0.0;
+        while (startID != lastID ) {
+            dis += g.distance(route.get(startID), route.get(startID + 1));
+            startID ++;
+        }
+        return  dis;
+    }
     private static int getDirection(GraphDB g, long n1, long n2, long n3) {
         double b1 = g.bearing(n2, n1);
         double b2 = g.bearing(n3, n2);
-        double rb = b2 -b1;
-        if ( -15 < rb && rb < 15) {
-            return 1;
-        } else if ( -15 >= rb && rb > -30) {
-            return 3;
-        } else if (15 <= rb && rb < 30) {
-            return 2;
-        } else if (-30 >= rb && rb > -100) {
-            return 5;
-        } else if (30 <= rb && rb < 100) {
-            return 4;
-        } else if (-100 >= 100) {
-            return 7;
+        //https://github.com/lijian12345/cs61b-sp18/blob/master/proj3/src/main/java/Router.java
+        double relativeBearing = b2 -b1;
+        if (relativeBearing > 180) {
+            relativeBearing -= 360;
+        } else if (relativeBearing < -180) {
+            relativeBearing += 360;
+        }
+
+        if (relativeBearing < -100) {
+            return NavigationDirection.SHARP_LEFT;
+        } else if (relativeBearing < -30) {
+            return NavigationDirection.LEFT;
+        } else if (relativeBearing < -15) {
+            return NavigationDirection.SLIGHT_LEFT;
+        } else if (relativeBearing < 15) {
+            return NavigationDirection.STRAIGHT;
+        } else if (relativeBearing < 30) {
+            return NavigationDirection.SLIGHT_RIGHT;
+        } else if (relativeBearing < 100) {
+            return NavigationDirection.RIGHT;
         } else {
-            return 6;
+            return NavigationDirection.SHARP_RIGHT;
         }
     }
 
