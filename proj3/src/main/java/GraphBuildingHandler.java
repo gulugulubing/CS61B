@@ -42,6 +42,7 @@ public class GraphBuildingHandler extends DefaultHandler {
     private GraphDB.Edge currentWay;
     private GraphDB.Node currentNode;
 
+
     /**
      * Create a new GraphBuildingHandler.
      * @param g The graph to populate with the XML data.

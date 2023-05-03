@@ -41,8 +41,8 @@ public class Router {
         g.setPriority(start, 0);
 
         //vertex number to the best vertex number.
-        Map<Long, Long> bestEdge = new HashMap<>();
 
+        Map<Long,Long> bestEdge = new HashMap<>();
 
 
         PriorityQueue<Long> fringe = new PriorityQueue<>(g.getNodeComparator());
@@ -61,7 +61,6 @@ public class Router {
                     bestDis.put(adj, bestDisOfAdj);
                     bestEdge.put(adj, dequeNode);
                     g.setPriority(adj, bestDisOfAdj + g.distance(adj, end));
-                    System.out.println("add" + dequeNode + "'s adj"+ adj);
                     fringe.add(adj);
                 }
             }
@@ -70,7 +69,9 @@ public class Router {
                 return null;
             }
             dequeNode = fringe.poll();
-            System.out.println(dequeNode);
+
+            //System.out.println(dequeNode);
+
         }
 
         return getPath(bestEdge, start, end);
@@ -105,10 +106,11 @@ public class Router {
         GraphDB.Edge way = g.getWay(startNodeOfWay, route.get(1));
         currentNavi.way = way.name;
 
+
         for (int i = 2; i < route.size(); i++) {
             if ((!way.nodesOfway.contains(route.get(i))) &&
                     ((!way.name.equals(g.getWay(route.get(i - 1), route.get(i)).name)))) {
-                //System.out.println(way.name + "---" + g.getWay( route.get(i - 1), route.get(i)).name );
+                System.out.println(way.name + "---" + g.getWay(route.get(i - 1), route.get(i)).name);
                 currentNavi.distance = g.distance(startNodeOfWay, route.get(i - 1));
                 navigationDirections.add(currentNavi);
                 startNodeOfWay = route.get(i - 1);

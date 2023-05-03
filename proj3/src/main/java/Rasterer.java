@@ -104,8 +104,9 @@ public class Rasterer {
 
         results.put("query_success", true);
 
-        //System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           //+ "your browser.");
+
+        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
+                           + "your browser.");
         return results;
     }
 

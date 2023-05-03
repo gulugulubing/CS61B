@@ -1,7 +1,3 @@
-/**Invariants:
- nextFirst:when addFirst,always minus 1,until 0,then circles. default value is arbitrary
- nextLast:when addLast,always add 1,until equals length,then circles. default value is arbitrary
- */
 
 public class ArrayDeque<T> {
     private int nextFirst;
@@ -16,8 +12,8 @@ public class ArrayDeque<T> {
         nextLast = 5;
     }
 
-    /**copy items to the new array with differnt length*/
-    private void arrayCopy(T[] newArray) {
+    private void resize(int capacity) {
+        T[] a = (T[]) new Object[capacity];
         int temp = nextFirst + 1;
         int tempSize = size;
         int i = 0;
@@ -25,22 +21,13 @@ public class ArrayDeque<T> {
             if (temp == items.length) {
                 temp = 0;
             }
-            newArray[i] = items[temp];
+            a[i] = items[temp];
             temp++;
             tempSize--;
             i++;
         }
-    }
-
-    /**change size*/
-    private void resize(int capacity) {
-        T[] a = (T[]) new Object[capacity];
-        arrayCopy(a);
         items = a;
         nextLast = size;
-        if (nextLast == items.length) {
-            nextLast = 0;
-        }
         nextFirst = a.length - 1;
     }
 
@@ -96,11 +83,33 @@ public class ArrayDeque<T> {
         System.out.println();
     }
 
+    private void downSize() {
+        T[] a = (T[]) new Object[items.length / 4];
+        int temp = nextFirst + 1;
+        int tempSize = size;
+        int i = 0;
+        while (tempSize > 0) {
+            if (temp == items.length) {
+                temp = 0;
+            }
+            a[i] = items[temp];
+            temp++;
+            tempSize--;
+            i++;
+        }
+        items = a;
+        nextLast = size;
+        if (nextLast == items.length) {
+            nextLast = 0;
+        }
+        nextFirst = a.length - 1;
+    }
+
     public T removeFirst() {
         if (size > 0) {
             float useRatio = (float) size / (float) items.length;
             if (useRatio <= 0.25) {
-                resize(items.length / 4);;
+                downSize();
             }
             int tempIndex;
             if (nextFirst == items.length - 1) {
@@ -120,7 +129,7 @@ public class ArrayDeque<T> {
         if (size > 0) {
             float useRatio = (float) size / (float) items.length;
             if (useRatio <= 0.25) {
-                resize(items.length / 4);
+                downSize();
             }
             int tempIndex;
             if (nextLast == 0) {
@@ -148,36 +157,15 @@ public class ArrayDeque<T> {
         }
     }
 
-    //self test
+    /**self test*/
     public static void main(String[] args) {
         ArrayDeque<String> L = new ArrayDeque<>();
         L.addFirst("a");
         L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
         L.removeFirst();
         L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
         System.out.println(L.isEmpty());
-        System.out.println(L.size());
         L.size();
         L.printDeque();
     }
-
 }

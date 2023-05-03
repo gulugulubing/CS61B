@@ -11,7 +11,7 @@ public class SineWaveGenerator implements Generator {
 		state = 0;
 		this.frequency = frequency;
 	}
-
+	@Override
 	public double next() {
 		state = (state + 1);
 		double period = StdAudio.SAMPLE_RATE / frequency;

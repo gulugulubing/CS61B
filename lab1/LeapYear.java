@@ -29,5 +29,9 @@ public class LeapYear {
             }
         }
     }
+
+    /** Is a leap year or not */
+    public static boolean isLeapYear(int year){
+    }
 }
 

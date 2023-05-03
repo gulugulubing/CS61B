@@ -22,8 +22,10 @@ public class TestRasterer {
     private static final double DOUBLE_THRESHOLD = 0.000000001;
     private static DecimalFormat df2 = new DecimalFormat(".#########");
     //origin file is just said "raster_params.txt"
+
     private static final String PARAMS_FILE = "proj3/raster_params.txt";
     private static final String RESULTS_FILE = "proj3/raster_results.txt";
+
     private static final int NUM_TESTS = 8;
     private static Rasterer rasterer;
 
@@ -52,6 +54,7 @@ public class TestRasterer {
     private List<Map<String, Double>> paramsFromFile() throws Exception {
         //current directory is G:\cs61b\CS61B
         // System.out.println(System.getProperty("user.dir"));
+
 
         List<String> lines = Files.readAllLines(Paths.get(PARAMS_FILE), Charset.defaultCharset());
         List<Map<String, Double>> testParams = new ArrayList<>();

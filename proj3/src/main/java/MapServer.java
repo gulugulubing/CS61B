@@ -89,6 +89,7 @@ public class MapServer {
      * This is for testing purposes, and you may fail tests otherwise.
      **/
     public static void initialize() {
+        System.out.println(System.getProperty("user.dir"));
         graph = new GraphDB(OSM_DB_PATH);
         rasterer = new Rasterer();
     }

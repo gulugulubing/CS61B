@@ -4,8 +4,10 @@ import edu.princeton.cs.algs4.StdOut;
 import java.awt.*;
 
 public class SeamCarver {
+
     private Picture p;
     private double[][] energyMatrix;
+
     public SeamCarver(Picture picture) {
         this.p = new Picture(picture);
         storeToEnergyMatrix();
@@ -176,6 +178,7 @@ public class SeamCarver {
         } else {
             rightEdgeEnergy = minEnergy[col + 1][row - 1];
         }
+
 
         //must <=, not =
         if (leftEdgeEnergy <= rightEdgeEnergy && leftEdgeEnergy <= middleEdgeEnergy) {

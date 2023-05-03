@@ -86,9 +86,14 @@ public class GraphDB {
     }
 
 
+    Boolean nodeInWay(long node, Edge way) {
+        return way.nodesOfway.contains(node);
+    }
+
+
     static class Edge {
         long id;
-        String name;
+        String name = "Unknown Road";
         String maxspeed;
         ArrayList<Long> nodesOfway = new ArrayList<>();
 

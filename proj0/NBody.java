@@ -29,9 +29,10 @@ public class NBody{
 		T = Double.parseDouble(args[0]);
 		dt = Double.parseDouble(args[1]);
 		filename = args[2];
-		Planet[] p = readPlanets(filename);
-		radius = readRadius(filename);
-		
+
+		Planet[] p = NBody.readPlanets(filename);
+		radius = NBody.readRadius(filename);
+
 		StdDraw.setScale(-radius, radius);
 		StdDraw.clear();
 		StdDraw.picture(0, 0, "images/starfield.jpg");

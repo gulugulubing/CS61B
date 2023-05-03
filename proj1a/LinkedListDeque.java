@@ -1,3 +1,4 @@
+
 /**cirle structure*/
 public class LinkedListDeque<T> {
     /**must be no-staitc,otherwise can not use GenreicType,
@@ -26,13 +27,6 @@ public class LinkedListDeque<T> {
         size = 0;
     }
 
-    /**not needed Deque can only be created from null
-    public LinkedListDeque(T x) {
-        sentinel = new StuffNode(null, null); //first para should be null,because null is Genre
-        sentinel.next = new StuffNode(x, sentinel);
-        size = 1;
-    }
-     */
     public void addFirst(T x) {
         sentinel.next = new StuffNode(x, sentinel.next);
         size++;
@@ -118,47 +112,49 @@ public class LinkedListDeque<T> {
         return temp;
     }
 
-    //self test
-    public static void main(String[] args){
-        LinkedListDeque<String> L = new LinkedListDeque<>();//test null list
-        //L.addFirst("thug");
-        L.addLast("thug");
-        LinkedListDeque<Integer> LL = new LinkedListDeque<>();//test null list
-        //LL.addFirst(1);
-        LL.addLast(1);
-        System.out.println(L.get(0));
-        System.out.println(L.getRecursive(0));
-        System.out.println(L.get(1));
-        System.out.println(L.getRecursive(1));
-        System.out.println(LL.get(0));
-        System.out.println(LL.getRecursive(0));
-        System.out.println(LL.get(1));
-        System.out.println(LL.getRecursive(1));
-        //System.out.println(L.size);
-        //System.out.println(LL.size);
-        L.printDeque();
-        LL.printDeque();
-        //System.out.println();
-        //System.out.println("remove first");
-        //String y = L.removeFirst();
-       // int yy = LL.removeFirst();
-       // System.out.println(y);
-        //System.out.println(yy);
-        //System.out.println(L.size);
-        //System.out.println(LL.size);
-        //L.printDeque();
-        //LL.printDeque();
-        System.out.println();
-        System.out.println("remove last");
-        String z = L.removeLast();
-        int zz = LL.removeLast();
-        System.out.println(z);
-        System.out.println(zz);
-        System.out.println(L.size);
-        System.out.println(LL.size);
-        L.printDeque();
-        LL.printDeque();
-    }
-
+    /** self test
+     public static void main(String[] args){
+     LinkedListDeque<String> L = new LinkedListDeque<String>("bone");
+     //LinkedListDeque<String> L = new LinkedListDeque<String>();test null list
+     //L.addFirst("thug");
+     L.addLast("thug");
+     LinkedListDeque<Integer> LL = new LinkedListDeque<Integer>(4);
+     //LinkedListDeque<Integer> LL = new LinkedListDeque<Integer>();//test null list
+     //LL.addFirst(1);
+     LL.addLast(1);
+     System.out.println(L.get(0));
+     System.out.println(L.getRecursive(0));
+     System.out.println(L.get(1));
+     System.out.println(L.getRecursive(1));
+     System.out.println(LL.get(0));
+     System.out.println(LL.getRecursive(0));
+     System.out.println(LL.get(1));
+     System.out.println(LL.getRecursive(1));
+     //System.out.println(L.size);
+     //System.out.println(LL.size);
+     L.printDeque();
+     LL.printDeque();
+     //System.out.println();
+     //System.out.println("remove first");
+     //String y = L.removeFirst();
+     // int yy = LL.removeFirst();
+     // System.out.println(y);
+     //System.out.println(yy);
+     //System.out.println(L.size);
+     //System.out.println(LL.size);
+     //L.printDeque();
+     //LL.printDeque();
+     System.out.println();
+     System.out.println("remove last");
+     String z = L.removeLast();
+     int zz = LL.removeLast();
+     System.out.println(z);
+     System.out.println(zz);
+     System.out.println(L.size);
+     System.out.println(LL.size);
+     L.printDeque();
+     LL.printDeque();
+     }
+     */
 
 }

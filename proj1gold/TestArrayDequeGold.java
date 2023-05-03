@@ -2,6 +2,30 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TestArrayDequeGold {
+    /**
+     * test add,get,and size changed by add
+     */
+    @Test
+    public void testGetAndAdd() {
+        StudentArrayDeque<Integer> stu = new StudentArrayDeque<>();
+        ArrayDequeSolution<Integer> sol = new ArrayDequeSolution<>();
+        for (int i = 0; i < 100; i++) {
+            Integer randomIndex;
+            double random01 = StdRandom.uniform();
+            if (random01 < 0.5) {
+                stu.addFirst(i);
+                sol.addFirst(i);
+                assertEquals(sol.get(0), stu.get(0));
+            } else {
+                stu.addLast(i);
+                sol.addLast(i);
+                assertEquals(sol.get(sol.size() - 1), stu.get(stu.size() - 1));
+            }
+            randomIndex = StdRandom.uniform(sol.size());
+            assertEquals(sol.get(randomIndex), stu.get(randomIndex));
+            assertEquals(sol.size(), stu.size());
+        }
+    }
 
     @Test
     public void testRemove() {
@@ -23,48 +47,24 @@ public class TestArrayDequeGold {
         }
 
         for (int i = 0; i < 10; i++) {
-            assertEquals(sol.size(),stu.size());
+            assertEquals(sol.size(), stu.size());
             double random01 = StdRandom.uniform();
-            if ( random01 < 0.5) {
+            if (random01 < 0.5) {
                 Integer solFirst = sol.removeFirst();
                 Integer stuFirst = stu.removeFirst();
                 message += "removeFirst()\n";
-                assertEquals(message,solFirst,stuFirst);
+                assertEquals(message, solFirst, stuFirst);
             } else {
                 Integer solLast = sol.removeLast();
                 Integer stuLast = stu.removeLast();
                 message += "removeLast()\n";
-                assertEquals(message,solLast,stuLast);
+                assertEquals(message, solLast, stuLast);
             }
         }
     }
 
+    public static void main(String[] args) {
+        jh61b.junit.TestRunner.runTests(TestArrayDequeGold.class);
+    }
 
-    /**test add,get,and size changed by add*/
-     @Test
-     public void testGetAndAdd() {
-         StudentArrayDeque<Integer> stu = new StudentArrayDeque<>();
-         ArrayDequeSolution<Integer> sol = new ArrayDequeSolution<>();
-        for (int i = 0; i < 100; i++) {
-            Integer randomIndex;
-            double random01 = StdRandom.uniform();
-            if ( random01 < 0.5) {
-                stu.addFirst(i);
-                sol.addFirst(i);
-                assertEquals(sol.get(0),stu.get(0));
-            } else {
-                stu.addLast(i);
-                sol.addLast(i);
-                assertEquals(sol.get(sol.size() - 1),stu.get(stu.size() - 1));
-            }
-            randomIndex = StdRandom.uniform(sol.size());
-            assertEquals(sol.get(randomIndex),stu.get(randomIndex));
-            assertEquals(sol.size(),stu.size());
-        }
-     }
-
-
-    //public static void main(String[] args) {
-     //   jh61b.junit.TestRunner.runTests(TestArrayDequeGold.class);
-    //}
 }

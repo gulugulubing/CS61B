@@ -31,10 +31,8 @@ public class ArrayDeque<T> implements Deque<T> {
             i++;
         }
     }
-
-    /**change size*/
-    private void resize(int capacity) {
-        T[] a = (T[]) new Object[capacity];
+    private void downSize() {
+        T[] a = (T[]) new Object[items.length / 4];
         arrayCopy(a);
         items = a;
         nextLast = size;
@@ -44,6 +42,15 @@ public class ArrayDeque<T> implements Deque<T> {
         nextFirst = a.length - 1;
     }
 
+    /**increase size*/
+    private void resize(int capacity) {
+        T[] a = (T[]) new Object[capacity];
+        arrayCopy(a);
+        items = a;
+        nextLast = size;
+        nextFirst = a.length - 1;
+    }
+    @Override
     public void addFirst(T x) {
         int rFACTOR = 2;
         if (size == items.length) {
@@ -56,7 +63,7 @@ public class ArrayDeque<T> implements Deque<T> {
             nextFirst = items.length - 1;
         }
     }
-
+    @Override
     public void addLast(T x) {
         int rFACTOR = 2;
         if (size == items.length) {
@@ -69,18 +76,18 @@ public class ArrayDeque<T> implements Deque<T> {
             nextLast = 0;
         }
     }
-
+    @Override
     public boolean isEmpty() {
         if (size == 0) {
             return true;
         }
         return false;
     }
-
+    @Override
     public int size() {
         return size;
     }
-
+    @Override
     public void printDeque() {
         int temp = nextFirst + 1;
         int tempSize = size;
@@ -95,12 +102,12 @@ public class ArrayDeque<T> implements Deque<T> {
         }
         System.out.println();
     }
-
+    @Override
     public T removeFirst() {
         if (size > 0) {
             float useRatio = (float) size / (float) items.length;
             if (useRatio <= 0.25) {
-                resize(items.length / 4);;
+                downSize();
             }
             int tempIndex;
             if (nextFirst == items.length - 1) {
@@ -115,12 +122,12 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
     }
-
+    @Override
     public T removeLast() {
         if (size > 0) {
             float useRatio = (float) size / (float) items.length;
             if (useRatio <= 0.25) {
-                resize(items.length / 4);
+                downSize();
             }
             int tempIndex;
             if (nextLast == 0) {
@@ -135,7 +142,7 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
     }
-
+    @Override
     public T get(int index) {
         if (index < 0 || index > (items.length - 1)) {
             return null;
@@ -148,36 +155,36 @@ public class ArrayDeque<T> implements Deque<T> {
         }
     }
 
-    //self test
-    public static void main(String[] args) {
-        ArrayDeque<String> L = new ArrayDeque<>();
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.addFirst("a");
-        L.addLast("b");
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        L.removeLast();
-        L.removeFirst();
-        System.out.println(L.isEmpty());
-        System.out.println(L.size());
-        L.size();
-        L.printDeque();
-    }
-
+    /**self test
+     public static void main(String[] args) {
+     ArrayDeque<String> L = new ArrayDeque<>();
+     L.addFirst("a");
+     L.addLast("b");
+     L.addFirst("a");
+     L.addLast("b");
+     L.addFirst("a");
+     L.addLast("b");
+     L.addFirst("a");
+     L.addLast("b");
+     L.addFirst("a");
+     L.addLast("b");
+     L.addFirst("a");
+     L.addLast("b");
+     L.removeFirst();
+     L.removeLast();
+     L.removeFirst();
+     L.removeLast();
+     L.removeFirst();
+     L.removeLast();
+     L.removeFirst();
+     L.removeLast();
+     L.removeFirst();
+     L.removeLast();
+     L.removeFirst();
+     System.out.println(L.isEmpty());
+     System.out.println(L.size());
+     L.size();
+     L.printDeque();
+     }
+     */
 }

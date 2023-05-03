@@ -85,6 +85,7 @@ public class MergeSort {
             return mergeSortedQueues(q1, items);
         }
         return mergeSortedQueues(mergeSort(q1), mergeSort(items));
+
     }
 
     public static void main(String args[]) {
@@ -116,6 +117,7 @@ public class MergeSort {
         */
         //test mergeSortedQueues
         Queue<Integer> q1 = new Queue<>();
+
         q1.enqueue(32);
         q1.enqueue(15);
         q1.enqueue(2);
@@ -125,6 +127,7 @@ public class MergeSort {
         q1.enqueue(41);
         q1.enqueue(17);
         q1.enqueue(17);
+
         System.out.println(q1);
         System.out.println(mergeSort(q1));
     }
